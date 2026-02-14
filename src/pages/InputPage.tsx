@@ -1,14 +1,19 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { ImagePlus, ArrowRight, X } from "lucide-react";
+import { ImagePlus, ArrowRight, X, Camera, Scissors, Loader2 } from "lucide-react";
+import { removeBackground } from "@imgly/background-removal";
 import DailyTheme from "@/components/DailyTheme";
 import { useDiaryStore } from "@/lib/diary-store";
+import { toast } from "sonner";
 
 const InputPage = () => {
   const navigate = useNavigate();
   const fileRef = useRef<HTMLInputElement>(null);
+  const cameraRef = useRef<HTMLInputElement>(null);
   const { text, setText, image, setImage, setTheme } = useDiaryStore();
   const [wordCount, setWordCount] = useState(0);
+  const [isRemoving, setIsRemoving] = useState(false);
+  const [showImageMenu, setShowImageMenu] = useState(false);
 
   const handleTextChange = (val: string) => {
     const words = val.trim().split(/\s+/).filter(Boolean).length;
@@ -18,12 +23,32 @@ const InputPage = () => {
     }
   };
 
+  const processFile = (file: File) => {
+    const reader = new FileReader();
+    reader.onload = (ev) => setImage(ev.target?.result as string);
+    reader.readAsDataURL(file);
+    setShowImageMenu(false);
+  };
+
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (ev) => setImage(ev.target?.result as string);
-      reader.readAsDataURL(file);
+    if (file) processFile(file);
+  };
+
+  const handleRemoveBackground = async () => {
+    if (!image) return;
+    setIsRemoving(true);
+    try {
+      const response = await fetch(image);
+      const blob = await response.blob();
+      const result = await removeBackground(blob);
+      const url = URL.createObjectURL(result);
+      setImage(url);
+      toast("Background removed ✨");
+    } catch {
+      toast.error("Couldn't remove background. Try a different image.");
+    } finally {
+      setIsRemoving(false);
     }
   };
 
@@ -58,25 +83,80 @@ const InputPage = () => {
       </div>
 
       {/* Image upload */}
-      <div className="mb-8 animate-slide-up" style={{ animationDelay: "0.3s", animationFillMode: "both" }}>
+      <div className="mb-8 animate-slide-up relative" style={{ animationDelay: "0.3s", animationFillMode: "both" }}>
         {image ? (
-          <div className="relative w-full h-32 rounded-lg overflow-hidden note-shadow">
-            <img src={image} alt="Uploaded" className="w-full h-full object-cover" />
-            <button
-              onClick={() => setImage(null)}
-              className="absolute top-2 right-2 p-1.5 rounded-full bg-foreground/60 text-primary-foreground hover:bg-foreground/80 gentle-transition"
-            >
-              <X className="w-3.5 h-3.5" />
-            </button>
+          <div className="relative w-full h-40 rounded-lg overflow-hidden note-shadow">
+            <img
+              src={image}
+              alt="Uploaded"
+              className={`w-full h-full object-cover gentle-transition ${isRemoving ? "opacity-50" : ""}`}
+            />
+            {isRemoving && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/60">
+                <Loader2 className="w-6 h-6 text-primary animate-spin mb-2" />
+                <p className="text-xs font-body text-foreground">Removing background…</p>
+              </div>
+            )}
+            <div className="absolute top-2 right-2 flex gap-1.5">
+              <button
+                onClick={handleRemoveBackground}
+                disabled={isRemoving}
+                className="p-1.5 rounded-full bg-foreground/60 text-primary-foreground hover:bg-foreground/80 gentle-transition disabled:opacity-50"
+                title="Remove background"
+              >
+                <Scissors className="w-3.5 h-3.5" />
+              </button>
+              <button
+                onClick={() => setImage(null)}
+                className="p-1.5 rounded-full bg-foreground/60 text-primary-foreground hover:bg-foreground/80 gentle-transition"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
           </div>
         ) : (
-          <button
-            onClick={() => fileRef.current?.click()}
-            className="w-full py-8 rounded-lg border-2 border-dashed border-border hover:border-primary/30 hover:bg-card gentle-transition flex flex-col items-center gap-2"
-          >
-            <ImagePlus className="w-5 h-5 text-muted-foreground" />
-            <span className="text-xs font-body text-muted-foreground">Add an image</span>
-          </button>
+          <>
+            <button
+              onClick={() => setShowImageMenu(!showImageMenu)}
+              className="w-full py-8 rounded-lg border-2 border-dashed border-border hover:border-primary/30 hover:bg-card gentle-transition flex flex-col items-center gap-2"
+            >
+              <ImagePlus className="w-5 h-5 text-muted-foreground" />
+              <span className="text-xs font-body text-muted-foreground">Add an image</span>
+            </button>
+
+            {/* Image source menu */}
+            {showImageMenu && (
+              <div className="absolute top-full left-0 right-0 mt-2 rounded-lg bg-card border border-border note-shadow z-20 overflow-hidden animate-slide-up">
+                <button
+                  onClick={() => {
+                    fileRef.current?.click();
+                    setShowImageMenu(false);
+                  }}
+                  className="w-full px-4 py-3.5 flex items-center gap-3 hover:bg-muted gentle-transition text-left"
+                >
+                  <ImagePlus className="w-4 h-4 text-muted-foreground" />
+                  <div>
+                    <p className="text-sm font-body text-foreground">Choose from album</p>
+                    <p className="text-[11px] font-body text-muted-foreground">Select an existing photo</p>
+                  </div>
+                </button>
+                <div className="border-t border-border" />
+                <button
+                  onClick={() => {
+                    cameraRef.current?.click();
+                    setShowImageMenu(false);
+                  }}
+                  className="w-full px-4 py-3.5 flex items-center gap-3 hover:bg-muted gentle-transition text-left"
+                >
+                  <Camera className="w-4 h-4 text-muted-foreground" />
+                  <div>
+                    <p className="text-sm font-body text-foreground">Take a photo</p>
+                    <p className="text-[11px] font-body text-muted-foreground">Use camera & auto remove background</p>
+                  </div>
+                </button>
+              </div>
+            )}
+          </>
         )}
         <input
           ref={fileRef}
@@ -85,7 +165,44 @@ const InputPage = () => {
           onChange={handleImageUpload}
           className="hidden"
         />
+        <input
+          ref={cameraRef}
+          type="file"
+          accept="image/*"
+          capture="environment"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) {
+              const reader = new FileReader();
+              reader.onload = async (ev) => {
+                const dataUrl = ev.target?.result as string;
+                setImage(dataUrl);
+                // Auto remove background for camera photos
+                setIsRemoving(true);
+                try {
+                  const resp = await fetch(dataUrl);
+                  const blob = await resp.blob();
+                  const result = await removeBackground(blob);
+                  const url = URL.createObjectURL(result);
+                  setImage(url);
+                  toast("Background removed ✨");
+                } catch {
+                  toast("Photo saved (background removal unavailable)");
+                } finally {
+                  setIsRemoving(false);
+                }
+              };
+              reader.readAsDataURL(file);
+            }
+          }}
+          className="hidden"
+        />
       </div>
+
+      {/* Click outside to close menu */}
+      {showImageMenu && (
+        <div className="fixed inset-0 z-10" onClick={() => setShowImageMenu(false)} />
+      )}
 
       {/* Next button */}
       <div className="animate-slide-up" style={{ animationDelay: "0.4s", animationFillMode: "both" }}>
