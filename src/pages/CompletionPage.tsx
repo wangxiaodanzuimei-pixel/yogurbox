@@ -9,13 +9,13 @@ import { useState } from "react";
 
 const CompletionPage = () => {
   const navigate = useNavigate();
-  const { text, image, selectedStyle, layoutVariant, entries, saveEntry, reset } = useDiaryStore();
+  const { text, image, selectedStyle, layoutVariant, mood, entries, saveEntry, reset } = useDiaryStore();
   const [selectedEntry, setSelectedEntry] = useState<DiaryEntry | null>(null);
 
   const handleSave = () => {
     const today = new Date();
     const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
-    saveEntry({ id: Date.now().toString(), text, image: image || undefined, style: selectedStyle, date: dateStr, theme: "" });
+    saveEntry({ id: Date.now().toString(), text, image: image || undefined, style: selectedStyle, date: dateStr, theme: "", mood });
     toast("已保存到相册 ✨", { description: "你的日记便签已保存～" });
   };
 

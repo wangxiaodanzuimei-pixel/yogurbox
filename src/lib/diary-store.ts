@@ -6,6 +6,7 @@ interface DiaryState {
   text: string;
   image: string | null;
   theme: string;
+  mood: string;
   selectedStyle: ArtistStyle;
   layoutVariant: number;
 
@@ -17,6 +18,7 @@ interface DiaryState {
   setText: (text: string) => void;
   setImage: (image: string | null) => void;
   setTheme: (theme: string) => void;
+  setMood: (mood: string) => void;
   setSelectedStyle: (style: ArtistStyle) => void;
   cycleLayout: () => void;
   saveEntry: (entry: DiaryEntry) => void;
@@ -28,6 +30,7 @@ export const useDiaryStore = create<DiaryState>((set, get) => ({
   text: "",
   image: null,
   theme: "",
+  mood: "",
   selectedStyle: "floral",
   layoutVariant: 0,
   entries: [],
@@ -36,6 +39,7 @@ export const useDiaryStore = create<DiaryState>((set, get) => ({
   setText: (text) => set({ text }),
   setImage: (image) => set({ image }),
   setTheme: (theme) => set({ theme }),
+  setMood: (mood) => set({ mood }),
   setSelectedStyle: (style) => set({ selectedStyle: style }),
   cycleLayout: () => set((s) => ({ layoutVariant: (s.layoutVariant + 1) % 6 })),
   saveEntry: (entry) => set((s) => ({ entries: [...s.entries, entry] })),
@@ -49,5 +53,5 @@ export const useDiaryStore = create<DiaryState>((set, get) => ({
     set({ savedArtists: [...savedArtists, artistId] });
     return true;
   },
-  reset: () => set({ text: "", image: null, selectedStyle: "floral", layoutVariant: 0 }),
+  reset: () => set({ text: "", image: null, mood: "", selectedStyle: "floral", layoutVariant: 0 }),
 }));

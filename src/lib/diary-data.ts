@@ -51,6 +51,19 @@ export const defaultTemplate = {
 
 export type ArtistStyle = "floral" | "ink" | "geometric";
 
+export const moodIcons = [
+  { emoji: "😊", label: "开心" },
+  { emoji: "😌", label: "平静" },
+  { emoji: "🥰", label: "幸福" },
+  { emoji: "😢", label: "难过" },
+  { emoji: "😤", label: "生气" },
+  { emoji: "😴", label: "疲惫" },
+  { emoji: "🤔", label: "思考" },
+  { emoji: "😳", label: "惊讶" },
+  { emoji: "🥺", label: "委屈" },
+  { emoji: "✨", label: "期待" },
+];
+
 export interface DiaryEntry {
   id: string;
   text: string;
@@ -58,6 +71,7 @@ export interface DiaryEntry {
   style: ArtistStyle;
   date: string;
   theme: string;
+  mood?: string;
 }
 
 export const calendarIcons = [
