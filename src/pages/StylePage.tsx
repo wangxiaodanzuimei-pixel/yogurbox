@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, RefreshCw, BookOpen, Download } from "lucide-react";
+import { ArrowLeft, RefreshCw, Download, Backpack } from "lucide-react";
 import NotePreview from "@/components/NotePreview";
 import ExportDialog from "@/components/ExportDialog";
 import ArtistButton from "@/components/ArtistButton";
@@ -10,9 +10,14 @@ import { useState } from "react";
 
 const StylePage = () => {
   const navigate = useNavigate();
-  const { text, image, selectedStyle, setSelectedStyle, layoutVariant, cycleLayout, mood, saveEntry, updateEntry, editingEntryId, reset } = useDiaryStore();
+  const { text, image, selectedStyle, setSelectedStyle, layoutVariant, cycleLayout, mood, saveEntry, updateEntry, editingEntryId, reset, savedArtists } = useDiaryStore();
   const [isRegenerating, setIsRegenerating] = useState(false);
   const [showExport, setShowExport] = useState(false);
+  const [showBackpack, setShowBackpack] = useState(false);
+
+  // Artists saved in backpack that are NOT the current weekly artists
+  const weeklyIds = artists.map((a) => a.id);
+  const backpackArtists = savedArtists.filter((id) => !weeklyIds.includes(id));
 
   const handleRegenerate = () => {
     setIsRegenerating(true);
@@ -29,9 +34,7 @@ const StylePage = () => {
           <ArrowLeft className="w-5 h-5 text-foreground" />
         </button>
         <h2 className="font-display text-lg flex items-center gap-1.5">✨ 选择风格</h2>
-        <button onClick={() => navigate("/library")} className="p-2 -mr-2 rounded-xl hover:bg-muted gentle-transition">
-          <BookOpen className="w-5 h-5 text-foreground" />
-        </button>
+        <div className="w-9" />
       </div>
 
       <div className={`mb-6 animate-float-in gentle-transition ${isRegenerating ? "opacity-0 scale-95" : "opacity-100 scale-100"}`}>
@@ -49,6 +52,8 @@ const StylePage = () => {
       </div>
 
       <div className="space-y-2 mb-6 animate-slide-up" style={{ animationDelay: "0.2s", animationFillMode: "both" }}>
+        {/* Section: This week's artists */}
+        <p className="text-[10px] font-body tracking-widest text-muted-foreground px-1 mb-1">🌟 本周艺术家</p>
         {artists.map((artist) => (
           <ArtistButton
             key={artist.id}
@@ -61,19 +66,63 @@ const StylePage = () => {
           />
         ))}
 
-        <button
-          onClick={() => setSelectedStyle("geometric")}
-          className={`w-full px-4 py-3 rounded-xl text-left gentle-transition font-body ${
-            selectedStyle === "geometric"
-              ? "bg-primary text-primary-foreground note-shadow"
-              : "bg-card text-foreground hover:bg-muted border-2 border-border"
-          }`}
-        >
-          <p className="font-display text-sm font-medium">{defaultTemplate.name}</p>
-          <p className={`text-xs mt-0.5 ${selectedStyle === "geometric" ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
-            {defaultTemplate.subtitle}
-          </p>
-        </button>
+        {/* Section: From backpack */}
+        <div className="pt-2">
+          <button
+            onClick={() => setShowBackpack(!showBackpack)}
+            className={`w-full px-4 py-3 rounded-xl text-left gentle-transition font-body flex items-center gap-3 ${
+              showBackpack ? "bg-card border-2 border-primary/20" : "bg-card border-2 border-border hover:bg-muted"
+            }`}
+          >
+            <span className="text-base">🎒</span>
+            <div className="flex-1">
+              <p className="font-display text-sm font-medium">从背包选择</p>
+              <p className="text-[10px] text-muted-foreground">已收藏的艺术家</p>
+            </div>
+            <span className={`text-xs text-muted-foreground gentle-transition ${showBackpack ? "rotate-90" : ""}`}>›</span>
+          </button>
+          {showBackpack && (
+            <div className="mt-1 ml-4 space-y-1 animate-fade-in">
+              {backpackArtists.length === 0 ? (
+                <p className="text-[10px] font-body text-muted-foreground/50 py-2 px-2">背包里还没有额外的艺术家～</p>
+              ) : (
+                backpackArtists.map((id) => {
+                  const artist = artists.find((a) => a.id === id);
+                  if (!artist) return null;
+                  return (
+                    <ArtistButton
+                      key={artist.id}
+                      name={artist.name}
+                      subtitle={artist.subtitle}
+                      bio={artist.bio}
+                      isActive={selectedStyle === artist.style}
+                      onClick={() => setSelectedStyle(artist.style)}
+                      color={artist.color}
+                    />
+                  );
+                })
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Section: System default */}
+        <div className="pt-2">
+          <p className="text-[10px] font-body tracking-widest text-muted-foreground px-1 mb-1">📐 系统默认</p>
+          <button
+            onClick={() => setSelectedStyle("geometric")}
+            className={`w-full px-4 py-3 rounded-xl text-left gentle-transition font-body ${
+              selectedStyle === "geometric"
+                ? "bg-primary text-primary-foreground note-shadow"
+                : "bg-card text-foreground hover:bg-muted border-2 border-border"
+            }`}
+          >
+            <p className="font-display text-sm font-medium">{defaultTemplate.name}</p>
+            <p className={`text-xs mt-0.5 ${selectedStyle === "geometric" ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
+              {defaultTemplate.subtitle}
+            </p>
+          </button>
+        </div>
       </div>
 
       <div className="flex gap-3 animate-slide-up" style={{ animationDelay: "0.3s", animationFillMode: "both" }}>
@@ -103,6 +152,8 @@ const StylePage = () => {
           📤 导出
         </button>
       </div>
+
+      <div className="h-6" />
 
       <ExportDialog
         open={showExport}
