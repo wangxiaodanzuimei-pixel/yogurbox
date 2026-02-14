@@ -42,7 +42,7 @@ const InputPage = () => {
   const handleAdoptTheme = async () => {
     setThemeAdopted(true);
     setTheme(suggestedTheme);
-    toast("已采纳主题 ✨", { duration: 2000 });
+    toast("已采纳主题 ✨", { duration: 1000 });
     try {
       await supabase.from("theme_usage").insert({ theme: suggestedTheme, is_recommended: true });
     } catch (e) {
@@ -100,7 +100,7 @@ const InputPage = () => {
             setIsRemoving(false);
           }
         } else {
-          toast("照片已保存 📷", { duration: 2000 });
+          toast("照片已保存 📷", { duration: 1000 });
         }
       };
       reader.readAsDataURL(file);

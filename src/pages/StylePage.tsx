@@ -83,10 +83,10 @@ const StylePage = () => {
             const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
             if (editingEntryId) {
               updateEntry({ id: editingEntryId, text, image: image || undefined, style: selectedStyle, date: dateStr, theme: "", mood });
-              toast("已更新 ✨", { duration: 2000 });
+              toast("已更新 ✨", { duration: 1000 });
             } else {
               saveEntry({ id: Date.now().toString(), text, image: image || undefined, style: selectedStyle, date: dateStr, theme: "", mood });
-              toast("已存下 ✨", { duration: 2000 });
+              toast("已存下 ✨", { duration: 1000 });
             }
             reset();
             navigate("/profile");

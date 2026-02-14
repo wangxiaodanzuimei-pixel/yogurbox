@@ -81,15 +81,15 @@ const LibraryPage = () => {
     const isAdded = savedArtists.includes(artistId);
     if (isAdded) {
       toggleSavedArtist(artistId);
-      toast("已移除", { duration: 2000 });
+      toast("已移除", { duration: 1000 });
     } else {
       const success = toggleSavedArtist(artistId);
       if (!success) {
-        toast("素材库已满", { description: "先移除一位画师吧", duration: 2000 });
+        toast("素材库已满", { description: "先移除一位画师吧", duration: 1500 });
       } else {
         setJustAdded(artistId);
         setTimeout(() => setJustAdded(null), 800);
-        toast("已收集 ✨", { duration: 2000 });
+        toast("已收集 ✨", { duration: 1000 });
       }
     }
   };
