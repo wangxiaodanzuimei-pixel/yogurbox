@@ -251,14 +251,6 @@ const InputPage = () => {
               <span className="text-xs font-body text-muted-foreground">拍照</span>
             </button>
 
-            {/* Bottom-left: album */}
-            <button
-              onClick={() => fileRef.current?.click()}
-              className="absolute bottom-2 left-3 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-card/80 border border-border text-[10px] font-body text-muted-foreground hover:text-foreground gentle-transition note-shadow"
-            >
-              <ImagePlus className="w-3.5 h-3.5" />
-              相册
-            </button>
 
             {/* Top-right: auto remove bg toggle */}
             <button
