@@ -11,7 +11,7 @@ import { useState, useCallback } from "react";
 
 const StylePage = () => {
   const navigate = useNavigate();
-  const { text, image, selectedStyle, setSelectedStyle, layoutVariant, cycleLayout, mood, saveEntry, updateEntry, editingEntryId, reset, savedArtists, toggleSavedArtist } = useDiaryStore();
+  const { text, image, images, selectedStyle, setSelectedStyle, layoutVariant, cycleLayout, mood, saveEntry, updateEntry, editingEntryId, reset, savedArtists, toggleSavedArtist } = useDiaryStore();
   const [isRegenerating, setIsRegenerating] = useState(false);
   const [showExport, setShowExport] = useState(false);
   const [showBackpack, setShowBackpack] = useState(false);
@@ -58,7 +58,7 @@ const StylePage = () => {
       </div>
 
       <div className={`mb-6 animate-float-in gentle-transition ${isRegenerating ? "opacity-0 scale-95" : "opacity-100 scale-100"}`}>
-        <NotePreview text={text} image={image} style={selectedStyle} layoutVariant={layoutVariant} />
+        <NotePreview text={text} image={image} images={images} style={selectedStyle} layoutVariant={layoutVariant} />
       </div>
 
       <div id="onboard-layout" className="flex justify-center mb-6">
@@ -153,10 +153,10 @@ const StylePage = () => {
             const today = new Date();
             const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
             if (editingEntryId) {
-              updateEntry({ id: editingEntryId, text, image: image || undefined, style: selectedStyle, date: dateStr, theme: "", mood });
+              updateEntry({ id: editingEntryId, text, image: image || undefined, images, style: selectedStyle, date: dateStr, theme: "", mood });
               toast("已更新 ✨", { duration: 1000 });
             } else {
-              saveEntry({ id: Date.now().toString(), text, image: image || undefined, style: selectedStyle, date: dateStr, theme: "", mood });
+              saveEntry({ id: Date.now().toString(), text, image: image || undefined, images, style: selectedStyle, date: dateStr, theme: "", mood });
               toast("已存下 ✨", { duration: 1000 });
             }
             reset();
@@ -190,6 +190,7 @@ const StylePage = () => {
         onClose={() => setShowExport(false)}
         text={text}
         image={image}
+        images={images}
         style={selectedStyle}
         layoutVariant={layoutVariant}
       />

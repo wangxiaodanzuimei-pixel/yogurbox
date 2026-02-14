@@ -59,7 +59,7 @@ const ProfilePage = () => {
       {latestEntry &&
       <div className="mb-6 animate-slide-up" style={{ animationDelay: "0.05s", animationFillMode: "both" }}>
           <p className="text-[10px] font-body tracking-widest text-muted-foreground mb-2 px-1">📝 今日便签</p>
-          <NotePreview text={latestEntry.text} image={latestEntry.image} style={latestEntry.style} layoutVariant={0} />
+          <NotePreview text={latestEntry.text} image={latestEntry.image} images={latestEntry.images} style={latestEntry.style} layoutVariant={0} />
           <div className="flex gap-2 mt-3 justify-center">
             <button
             onClick={() => handleEdit(latestEntry)}
@@ -202,6 +202,7 @@ const ProfilePage = () => {
         onClose={() => {setShowExport(false);setExportEntry(null);}}
         text={exportEntry.text}
         image={exportEntry.image}
+        images={exportEntry.images}
         style={exportEntry.style}
         layoutVariant={0} />
 

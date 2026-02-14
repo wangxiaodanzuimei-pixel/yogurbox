@@ -5,6 +5,7 @@ interface DiaryState {
   // Current note being created
   text: string;
   image: string | null;
+  images: string[];
   theme: string;
   mood: string;
   selectedStyle: ArtistStyle;
@@ -17,6 +18,9 @@ interface DiaryState {
   // Actions
   setText: (text: string) => void;
   setImage: (image: string | null) => void;
+  addImage: (image: string) => void;
+  removeImage: (index: number) => void;
+  updateImage: (index: number, image: string) => void;
   setTheme: (theme: string) => void;
   setMood: (mood: string) => void;
   setSelectedStyle: (style: ArtistStyle) => void;
@@ -32,6 +36,7 @@ interface DiaryState {
 export const useDiaryStore = create<DiaryState>((set, get) => ({
   text: "",
   image: null,
+  images: [],
   theme: "",
   mood: "",
   selectedStyle: "floral",
@@ -42,6 +47,11 @@ export const useDiaryStore = create<DiaryState>((set, get) => ({
 
   setText: (text) => set({ text }),
   setImage: (image) => set({ image }),
+  addImage: (image) => set((s) => ({ images: [...s.images, image] })),
+  removeImage: (index) => set((s) => ({ images: s.images.filter((_, i) => i !== index) })),
+  updateImage: (index, image) => set((s) => ({
+    images: s.images.map((img, i) => (i === index ? image : img)),
+  })),
   setTheme: (theme) => set({ theme }),
   setMood: (mood) => set({ mood }),
   setSelectedStyle: (style) => set({ selectedStyle: style }),
@@ -54,6 +64,7 @@ export const useDiaryStore = create<DiaryState>((set, get) => ({
   loadEntry: (entry) => set({
     text: entry.text,
     image: entry.image || null,
+    images: entry.images || (entry.image ? [entry.image] : []),
     selectedStyle: entry.style,
     mood: entry.mood || "",
     editingEntryId: entry.id,
@@ -68,5 +79,5 @@ export const useDiaryStore = create<DiaryState>((set, get) => ({
     set({ savedArtists: [...savedArtists, artistId] });
     return true;
   },
-  reset: () => set({ text: "", image: null, mood: "", selectedStyle: "floral", layoutVariant: 0, editingEntryId: null }),
+  reset: () => set({ text: "", image: null, images: [], mood: "", selectedStyle: "floral", layoutVariant: 0, editingEntryId: null }),
 }));
