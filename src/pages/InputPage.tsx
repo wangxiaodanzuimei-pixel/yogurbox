@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ImagePlus, ArrowRight, X, Camera, Scissors, Loader2, User } from "lucide-react";
 import DailyTheme from "@/components/DailyTheme";
 import { useDiaryStore } from "@/lib/diary-store";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 const InputPage = () => {
@@ -36,10 +37,18 @@ const InputPage = () => {
     if (!image) return;
     setIsRemoving(true);
     try {
-      // Simulate background removal - replace with real API when backend is ready
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      toast("抠图功能即将上线，敬请期待 ✨");
-    } catch {
+      const { data, error } = await supabase.functions.invoke('remove-bg', {
+        body: { image },
+      });
+      if (error) throw error;
+      if (data?.image) {
+        setImage(data.image);
+        toast.success("背景已移除 ✨");
+      } else {
+        throw new Error("未返回处理后的图片");
+      }
+    } catch (err: any) {
+      console.error('Remove bg error:', err);
       toast.error("无法移除背景，请尝试其他图片");
     } finally {
       setIsRemoving(false);
