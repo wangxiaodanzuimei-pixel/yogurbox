@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ImagePlus, ArrowRight, X, Camera, Scissors, Loader2, User, RefreshCw, Check } from "lucide-react";
 import MoodPicker from "@/components/MoodPicker";
+import OnboardingOverlay from "@/components/OnboardingOverlay";
 import { useDiaryStore } from "@/lib/diary-store";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -142,6 +143,7 @@ const InputPage = () => {
           <p className="text-xs font-body text-muted-foreground">轻声书写，精心装饰 ♪</p>
         </div>
         <button
+          id="onboard-profile"
           onClick={() => navigate("/profile")}
           className="w-10 h-10 rounded-full bg-card border-2 border-kawaii-pink/30 flex items-center justify-center hover:bg-muted note-shadow gentle-transition hover:scale-105"
           aria-label="个人中心"
@@ -151,12 +153,12 @@ const InputPage = () => {
       </div>
 
       {/* Mood picker */}
-      <div className="mb-4 animate-slide-up" style={{ animationDelay: "0.1s", animationFillMode: "both" }}>
+      <div id="onboard-mood" className="mb-4 animate-slide-up" style={{ animationDelay: "0.1s", animationFillMode: "both" }}>
         <MoodPicker selected={mood} onSelect={setMood} />
       </div>
 
       {/* Suggested theme + Text input */}
-      <div className="mb-6 animate-slide-up" style={{ animationDelay: "0.15s", animationFillMode: "both" }}>
+      <div id="onboard-text" className="mb-6 animate-slide-up" style={{ animationDelay: "0.15s", animationFillMode: "both" }}>
         {/* Theme suggestion bar */}
         <div className="flex items-center gap-2 mb-2 px-1">
           <p className={`text-xs font-body flex-1 gentle-transition ${themeAdopted ? "text-primary" : "text-muted-foreground/50"}`}>
@@ -205,7 +207,7 @@ const InputPage = () => {
       </div>
 
       {/* Image upload */}
-      <div className="mb-8 animate-slide-up relative" style={{ animationDelay: "0.3s", animationFillMode: "both" }}>
+      <div id="onboard-camera" className="mb-8 animate-slide-up relative" style={{ animationDelay: "0.3s", animationFillMode: "both" }}>
         {image ? (
           <div className="relative w-full rounded-2xl overflow-hidden note-shadow border-2 border-border bg-muted/30 flex items-center justify-center" style={{ minHeight: '9rem', maxHeight: '16rem' }}>
             <img
@@ -300,6 +302,16 @@ const InputPage = () => {
         </div>
       </div>
       <div className="h-20" />
+
+      <OnboardingOverlay
+        storageKey="onboarding-input"
+        steps={[
+          { targetId: "onboard-mood", message: "先告诉我你今天的心情吧，这个图标会出现在之后的月度视图中哦 🎭" },
+          { targetId: "onboard-text", message: "写下你想记录的事～ ✍️" },
+          { targetId: "onboard-camera", message: "还可以拍一张照片装饰你的便签，点亮抠图功能的话我会帮你抠图 📷" },
+          { targetId: "onboard-profile", message: "在这里可以看到你的历史记录和素材库 📖" },
+        ]}
+      />
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, RefreshCw, Download, Backpack } from "lucide-react";
+import { ArrowLeft, RefreshCw, Download } from "lucide-react";
+import OnboardingOverlay from "@/components/OnboardingOverlay";
 import NotePreview from "@/components/NotePreview";
 import ExportDialog from "@/components/ExportDialog";
 import ArtistButton from "@/components/ArtistButton";
@@ -41,7 +42,7 @@ const StylePage = () => {
         <NotePreview text={text} image={image} style={selectedStyle} layoutVariant={layoutVariant} />
       </div>
 
-      <div className="flex justify-center mb-6">
+      <div id="onboard-layout" className="flex justify-center mb-6">
         <button
           onClick={handleRegenerate}
           className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-card border-2 border-border text-sm font-body text-muted-foreground hover:text-foreground hover:bg-muted hover:scale-105 gentle-transition"
@@ -51,7 +52,7 @@ const StylePage = () => {
         </button>
       </div>
 
-      <div className="space-y-2 mb-6 animate-slide-up" style={{ animationDelay: "0.2s", animationFillMode: "both" }}>
+      <div id="onboard-weekly-artists" className="space-y-2 mb-6 animate-slide-up" style={{ animationDelay: "0.2s", animationFillMode: "both" }}>
         {/* Section: This week's artists */}
         <p className="text-[10px] font-body tracking-widest text-muted-foreground px-1 mb-1">🌟 本周艺术家</p>
         {artists.map((artist) => (
@@ -154,6 +155,14 @@ const StylePage = () => {
       </div>
 
       <div className="h-6" />
+
+      <OnboardingOverlay
+        storageKey="onboarding-style"
+        steps={[
+          { targetId: "onboard-layout", message: "总共有6种排版供你选择，点击这里随机切换 🎲" },
+          { targetId: "onboard-weekly-artists", message: "每周都会更新两位新的作者元素，下周就会消失哦。喜欢的话可以将她收藏进背包 🌟" },
+        ]}
+      />
 
       <ExportDialog
         open={showExport}
