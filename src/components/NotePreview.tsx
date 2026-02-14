@@ -107,18 +107,34 @@ const CornerSticker = ({ emoji, position, delay }: { emoji: string; position: st
 const NotePreview = ({ text, image, images, style, layoutVariant }: NotePreviewProps) => {
   const config = styleConfig[style];
   const decoration = decorationMap[style];
-  // Support both legacy single image and new images array
-  const resolvedImage = images && images.length > 0 ? images[0] : image;
+  // Resolve all images: prefer images array, fall back to single image
+  const allImages: string[] = images && images.length > 0 ? images : image ? [image] : [];
+  const hasImages = allImages.length > 0;
   const displayText = text || "你的文字将出现在这里…";
   const dateStr = new Date().toLocaleDateString("zh-CN", { month: "long", day: "numeric" });
   const weekday = new Date().toLocaleDateString("zh-CN", { weekday: "short" });
 
-  const renderImage = (className: string, containerClass: string) => {
-    if (!resolvedImage) return null;
+  const renderSingleImage = (src: string, className: string, containerClass: string) => (
+    <div className={`relative overflow-hidden ${containerClass}`}>
+      <WashiTape style={style} />
+      <img src={src} alt="" className={`w-full h-full object-contain ${className}`} />
+    </div>
+  );
+
+  // Multi-image grid: shows 1-3 images in a cute layout
+  const renderImageGrid = (containerClass: string) => {
+    if (!hasImages) return null;
+    if (allImages.length === 1) {
+      return renderSingleImage(allImages[0], "", containerClass);
+    }
     return (
       <div className={`relative overflow-hidden ${containerClass}`}>
         <WashiTape style={style} />
-        <img src={resolvedImage} alt="" className={`w-full h-full object-contain ${className}`} />
+        <div className={`w-full h-full grid gap-1 ${allImages.length === 2 ? "grid-cols-2" : "grid-cols-3"}`}>
+          {allImages.map((src, i) => (
+            <img key={i} src={src} alt="" className="w-full h-full object-cover rounded-md" />
+          ))}
+        </div>
       </div>
     );
   };
@@ -188,7 +204,7 @@ const NotePreview = ({ text, image, images, style, layoutVariant }: NotePreviewP
         {/* 6 Layout variants */}
         {layoutVariant === 0 && (
           <div className="flex-1 flex flex-col min-h-0">
-            {renderImage("", "w-full h-20 rounded-lg ring-1 ring-border/50 mb-3 bg-muted/20")}
+            {renderImageGrid("w-full h-20 rounded-lg ring-1 ring-border/50 mb-3 bg-muted/20")}
             <p className={`${config.text} text-[13px] leading-relaxed flex-1 line-clamp-6`}>
               {displayText}
             </p>
@@ -197,7 +213,10 @@ const NotePreview = ({ text, image, images, style, layoutVariant }: NotePreviewP
 
         {layoutVariant === 1 && (
           <div className="flex gap-3 flex-1 min-h-0">
-            {renderImage("", "w-20 h-24 rounded-lg flex-shrink-0 ring-1 ring-border/50 bg-muted/20")}
+            {allImages.length <= 1
+              ? renderImageGrid("w-20 h-24 rounded-lg flex-shrink-0 ring-1 ring-border/50 bg-muted/20")
+              : renderImageGrid("w-28 h-24 rounded-lg flex-shrink-0 ring-1 ring-border/50 bg-muted/20")
+            }
             <p className={`${config.text} text-[13px] leading-relaxed flex-1 line-clamp-6`}>
               {displayText}
             </p>
@@ -209,18 +228,19 @@ const NotePreview = ({ text, image, images, style, layoutVariant }: NotePreviewP
             <p className={`${config.text} text-[13px] leading-relaxed flex-1 line-clamp-5`}>
               {displayText}
             </p>
-            {renderImage("", "w-full h-16 rounded-lg mt-3 ring-1 ring-border/50 bg-muted/20")}
+            {renderImageGrid("w-full h-16 rounded-lg mt-3 ring-1 ring-border/50 bg-muted/20")}
           </div>
         )}
 
         {layoutVariant === 3 && (
           <div className="flex-1 flex flex-col items-center justify-center min-h-0 text-center">
-            {resolvedImage && (
-              <div className="relative mb-3">
-                <div className="w-16 h-16 rounded-full overflow-hidden ring-2 ring-border/30 bg-muted/20">
-                  <img src={resolvedImage} alt="" className="w-full h-full object-cover" />
-                </div>
-                {/* Cute frame decoration */}
+            {hasImages && (
+              <div className="relative mb-3 flex items-center gap-1.5">
+                {allImages.map((src, i) => (
+                  <div key={i} className={`overflow-hidden ring-2 ring-border/30 bg-muted/20 ${allImages.length === 1 ? "w-16 h-16 rounded-full" : "w-12 h-12 rounded-xl"}`}>
+                    <img src={src} alt="" className="w-full h-full object-cover" />
+                  </div>
+                ))}
                 <div className="absolute -top-1 -right-1 text-xs" style={{ animation: "sparkle 2s ease-in-out infinite" }}>✨</div>
               </div>
             )}
@@ -235,15 +255,18 @@ const NotePreview = ({ text, image, images, style, layoutVariant }: NotePreviewP
             <p className={`${config.text} text-[13px] leading-relaxed flex-1 line-clamp-6`}>
               {displayText}
             </p>
-            {renderImage("", "w-20 h-24 rounded-lg flex-shrink-0 ring-1 ring-border/50 bg-muted/20")}
+            {allImages.length <= 1
+              ? renderImageGrid("w-20 h-24 rounded-lg flex-shrink-0 ring-1 ring-border/50 bg-muted/20")
+              : renderImageGrid("w-28 h-24 rounded-lg flex-shrink-0 ring-1 ring-border/50 bg-muted/20")
+            }
           </div>
         )}
 
         {layoutVariant === 5 && (
           <div className="flex-1 flex flex-col justify-end min-h-0 relative">
-            {resolvedImage && (
+            {hasImages && (
               <div className="absolute inset-0 -m-5 mt-0 rounded-lg overflow-hidden">
-                <img src={resolvedImage} alt="" className="w-full h-full object-cover opacity-30" />
+                <img src={allImages[0]} alt="" className="w-full h-full object-cover opacity-30" />
               </div>
             )}
             <div className="relative bg-card/80 backdrop-blur-sm rounded-lg p-3 border border-border/30">
