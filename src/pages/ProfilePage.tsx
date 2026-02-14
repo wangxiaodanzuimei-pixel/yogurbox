@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Clock, Pencil, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Clock, Pencil, X } from "lucide-react";
 import { useDiaryStore } from "@/lib/diary-store";
 import CalendarView from "@/components/CalendarView";
 import NotePreview from "@/components/NotePreview";
@@ -9,7 +9,7 @@ import { useState } from "react";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
-  const { entries, loadEntry } = useDiaryStore();
+  const { entries, loadEntry, savedArtists } = useDiaryStore();
   const [selectedEntry, setSelectedEntry] = useState<DiaryEntry | null>(null);
   const [showExport, setShowExport] = useState(false);
   const [exportEntry, setExportEntry] = useState<DiaryEntry | null>(null);
@@ -87,18 +87,19 @@ const ProfilePage = () => {
         </div>
       </div>
 
-      {/* Material library + timeline */}
+      {/* Material library entry */}
       <div className="animate-slide-up" style={{ animationDelay: "0.15s", animationFillMode: "both" }}>
-        <div className="flex gap-3 mb-6">
-          <button
-            onClick={() => navigate("/library")}
-            className="flex-1 py-4 px-4 rounded-2xl bg-card border-2 border-border note-shadow hover:bg-muted hover:scale-[1.02] gentle-transition text-center"
-          >
-            <span className="text-xl mb-1 block">🎨</span>
-            <p className="text-xs font-body text-foreground font-medium">素材库</p>
-            <p className="text-[10px] font-body text-muted-foreground mt-0.5">我的画师</p>
-          </button>
-        </div>
+        <button
+          onClick={() => navigate("/library")}
+          className="w-full mb-6 px-4 py-3 rounded-2xl bg-card border-2 border-border note-shadow hover:bg-muted hover:scale-[1.01] gentle-transition flex items-center gap-3"
+        >
+          <span className="text-lg">🎒</span>
+          <div className="text-left flex-1">
+            <p className="text-xs font-body text-foreground font-medium">素材背包</p>
+            <p className="text-[10px] font-body text-muted-foreground">已收集 {savedArtists.length}/5 位艺术家</p>
+          </div>
+          <ArrowRight className="w-4 h-4 text-muted-foreground" />
+        </button>
       </div>
 
       {/* Timeline */}

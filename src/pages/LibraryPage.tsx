@@ -103,10 +103,10 @@ const LibraryPage = () => {
         </button>
         <div className="flex-1">
           <h2 className="font-display text-xl flex items-center gap-2">
-            素材图鉴 <span className="text-base">📕</span>
+            素材背包 <span className="text-base">🎒</span>
           </h2>
           <p className="text-xs font-body text-muted-foreground">
-            已收集 {savedArtists.length}/{MAX_SLOTS} 枚印章
+            已收集 {savedArtists.length}/{MAX_SLOTS} 位艺术家
           </p>
         </div>
       </div>
@@ -128,7 +128,7 @@ const LibraryPage = () => {
           }}
         />
         <p className="text-xs font-body text-muted-foreground mb-3 flex items-center gap-1.5 relative">
-          🏷️ 印章收藏册
+          🎨 素材收藏
         </p>
         <div className="grid grid-cols-5 gap-2.5 relative">
           {slots.map((artist, index) => (

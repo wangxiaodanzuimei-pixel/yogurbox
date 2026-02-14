@@ -1,17 +1,14 @@
 import { useNavigate } from "react-router-dom";
-import { Download, Share2, ArrowLeft, Home, X } from "lucide-react";
+import { Download, ArrowLeft, Home } from "lucide-react";
 import NotePreview from "@/components/NotePreview";
 import ExportDialog from "@/components/ExportDialog";
-import CalendarView from "@/components/CalendarView";
 import { useDiaryStore } from "@/lib/diary-store";
 import { toast } from "sonner";
-import type { DiaryEntry } from "@/lib/diary-data";
 import { useState } from "react";
 
 const CompletionPage = () => {
   const navigate = useNavigate();
-  const { text, image, selectedStyle, layoutVariant, mood, entries, saveEntry, updateEntry, editingEntryId, reset } = useDiaryStore();
-  const [selectedEntry, setSelectedEntry] = useState<DiaryEntry | null>(null);
+  const { text, image, selectedStyle, layoutVariant, mood, saveEntry, updateEntry, editingEntryId, reset } = useDiaryStore();
   const [showExport, setShowExport] = useState(false);
 
   const handleSave = () => {
@@ -19,15 +16,13 @@ const CompletionPage = () => {
     const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
     if (editingEntryId) {
       updateEntry({ id: editingEntryId, text, image: image || undefined, style: selectedStyle, date: dateStr, theme: "", mood });
-      toast("已更新 ✨", { description: "日记已成功修改～" });
+      toast("已更新 ✨", { duration: 2000 });
     } else {
       saveEntry({ id: Date.now().toString(), text, image: image || undefined, style: selectedStyle, date: dateStr, theme: "", mood });
-      toast("已保存到相册 ✨", { description: "你的日记便签已保存～" });
+      toast("已存下 ✨", { duration: 2000 });
     }
-  };
-
-  const handleShare = () => {
-    toast("分享功能即将上线", { description: "敬请期待后续更新 ♪" });
+    reset();
+    navigate("/profile");
   };
 
   return (
@@ -52,7 +47,7 @@ const CompletionPage = () => {
           className="flex-1 py-3.5 rounded-2xl bg-primary text-primary-foreground font-body text-sm tracking-wide flex items-center justify-center gap-2 note-shadow hover:note-shadow-hover hover:scale-[1.01] gentle-transition"
         >
           <Download className="w-4 h-4" />
-          保存
+          存下它
         </button>
         <button
           onClick={() => setShowExport(true)}
@@ -60,44 +55,7 @@ const CompletionPage = () => {
         >
           📤 导出
         </button>
-        <button
-          onClick={handleShare}
-          className="py-3.5 px-5 rounded-2xl bg-card text-foreground font-body text-sm border-2 border-border flex items-center justify-center gap-2 hover:bg-muted hover:scale-105 gentle-transition"
-        >
-          <Share2 className="w-4 h-4" />
-        </button>
       </div>
-
-      <div className="animate-slide-up" style={{ animationDelay: "0.3s", animationFillMode: "both" }}>
-        <div className="rounded-2xl bg-card p-5 note-shadow border-2 border-border">
-          <h3 className="font-display text-base mb-4 text-center flex items-center justify-center gap-1.5">
-            📅 你的旅程
-          </h3>
-          <CalendarView entries={entries} onDateClick={(entry) => setSelectedEntry(entry)} />
-        </div>
-      </div>
-
-      {/* Entry detail modal */}
-      {selectedEntry && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center px-6 bg-foreground/30 animate-fade-in" onClick={() => setSelectedEntry(null)}>
-          <div className="w-full max-w-sm rounded-2xl bg-card p-5 note-shadow border-2 border-border animate-slide-up" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-3">
-              <p className="text-xs font-body text-muted-foreground">
-                {new Date(selectedEntry.date).toLocaleDateString("zh-CN", { year: "numeric", month: "long", day: "numeric", weekday: "short" })}
-              </p>
-              <button onClick={() => setSelectedEntry(null)} className="p-1 rounded-full hover:bg-muted">
-                <X className="w-4 h-4 text-muted-foreground" />
-              </button>
-            </div>
-            {selectedEntry.image && (
-              <div className="w-full h-32 rounded-xl overflow-hidden mb-3">
-                <img src={selectedEntry.image} alt="" className="w-full h-full object-cover" />
-              </div>
-            )}
-            <p className="text-sm font-body text-foreground leading-relaxed">{selectedEntry.text}</p>
-          </div>
-        </div>
-      )}
 
       <ExportDialog
         open={showExport}
