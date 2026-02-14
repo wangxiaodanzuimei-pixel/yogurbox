@@ -80,9 +80,9 @@ const ProfilePage = () => {
       {/* Calendar month view */}
       <div className="mb-6 animate-slide-up" style={{ animationDelay: "0.1s", animationFillMode: "both" }}>
         <div className="rounded-2xl bg-card p-5 note-shadow border-2 border-border">
-          <h3 className="font-display text-base mb-4 text-center flex items-center justify-center gap-1.5">
-            📅 月视图
-          </h3>
+          
+
+
           <CalendarView entries={entries} onDateClick={(entry) => setSelectedEntry(entry)} />
         </div>
       </div>
