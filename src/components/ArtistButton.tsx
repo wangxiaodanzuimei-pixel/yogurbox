@@ -1,4 +1,4 @@
-import { Info } from "lucide-react";
+import { Info, Bookmark } from "lucide-react";
 import { useState } from "react";
 
 interface ArtistButtonProps {
@@ -8,9 +8,11 @@ interface ArtistButtonProps {
   isActive: boolean;
   onClick: () => void;
   color?: string;
+  isSaved?: boolean;
+  onToggleSave?: () => void;
 }
 
-const ArtistButton = ({ name, subtitle, bio, isActive, onClick }: ArtistButtonProps) => {
+const ArtistButton = ({ name, subtitle, bio, isActive, onClick, isSaved, onToggleSave }: ArtistButtonProps) => {
   const [showBio, setShowBio] = useState(false);
 
   return (
@@ -30,16 +32,30 @@ const ArtistButton = ({ name, subtitle, bio, isActive, onClick }: ArtistButtonPr
               {subtitle}
             </p>
           </div>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setShowBio(!showBio);
-            }}
-            className={`p-1.5 rounded-full ${isActive ? "hover:bg-primary-foreground/10" : "hover:bg-muted"}`}
-            aria-label={`关于 ${name}`}
-          >
-            <Info className="w-3.5 h-3.5" />
-          </button>
+          <div className="flex items-center gap-1">
+            {onToggleSave && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onToggleSave();
+                }}
+                className={`p-1.5 rounded-full gentle-transition ${isActive ? "hover:bg-primary-foreground/10" : "hover:bg-muted"}`}
+                aria-label={isSaved ? "取消收藏" : "收藏"}
+              >
+                <Bookmark className={`w-3.5 h-3.5 gentle-transition ${isSaved ? "fill-current" : ""}`} />
+              </button>
+            )}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowBio(!showBio);
+              }}
+              className={`p-1.5 rounded-full ${isActive ? "hover:bg-primary-foreground/10" : "hover:bg-muted"}`}
+              aria-label={`关于 ${name}`}
+            >
+              <Info className="w-3.5 h-3.5" />
+            </button>
+          </div>
         </div>
       </button>
 

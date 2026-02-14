@@ -7,11 +7,11 @@ import ArtistButton from "@/components/ArtistButton";
 import { useDiaryStore } from "@/lib/diary-store";
 import { artists, defaultTemplate, type ArtistStyle } from "@/lib/diary-data";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 
 const StylePage = () => {
   const navigate = useNavigate();
-  const { text, image, selectedStyle, setSelectedStyle, layoutVariant, cycleLayout, mood, saveEntry, updateEntry, editingEntryId, reset, savedArtists } = useDiaryStore();
+  const { text, image, selectedStyle, setSelectedStyle, layoutVariant, cycleLayout, mood, saveEntry, updateEntry, editingEntryId, reset, savedArtists, toggleSavedArtist } = useDiaryStore();
   const [isRegenerating, setIsRegenerating] = useState(false);
   const [showExport, setShowExport] = useState(false);
   const [showBackpack, setShowBackpack] = useState(false);
@@ -19,6 +19,25 @@ const StylePage = () => {
   // Artists saved in backpack that are NOT the current weekly artists
   const weeklyIds = artists.map((a) => a.id);
   const backpackArtists = savedArtists.filter((id) => !weeklyIds.includes(id));
+
+  const handleSelectArtist = useCallback((artist: typeof artists[0]) => {
+    setSelectedStyle(artist.style);
+    // Auto-save to backpack when used
+    if (!savedArtists.includes(artist.id)) {
+      const ok = toggleSavedArtist(artist.id);
+      if (ok) toast("已自动收藏 ✨", { duration: 1000 });
+    }
+  }, [savedArtists, setSelectedStyle, toggleSavedArtist]);
+
+  const handleToggleSave = useCallback((artistId: string) => {
+    const wasSaved = savedArtists.includes(artistId);
+    const ok = toggleSavedArtist(artistId);
+    if (!ok) {
+      toast("背包已满（最多5个）", { duration: 1500 });
+      return;
+    }
+    toast(wasSaved ? "已取消收藏" : "已收藏 ✨", { duration: 1000 });
+  }, [savedArtists, toggleSavedArtist]);
 
   const handleRegenerate = () => {
     setIsRegenerating(true);
@@ -62,8 +81,10 @@ const StylePage = () => {
             subtitle={artist.subtitle}
             bio={artist.bio}
             isActive={selectedStyle === artist.style}
-            onClick={() => setSelectedStyle(artist.style)}
+            onClick={() => handleSelectArtist(artist)}
             color={artist.color}
+            isSaved={savedArtists.includes(artist.id)}
+            onToggleSave={() => handleToggleSave(artist.id)}
           />
         ))}
 
