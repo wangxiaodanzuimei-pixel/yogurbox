@@ -11,8 +11,8 @@ const LibraryPage = () => {
   const handleToggle = (artistId: string) => {
     const success = toggleSavedArtist(artistId);
     if (!success) {
-      toast("Library full", {
-        description: "Remove an artist first, or upgrade for more slots.",
+      toast("素材库已满", {
+        description: "请先移除一位艺术家，或升级会员获取更多位置。",
       });
     }
   };
@@ -25,8 +25,8 @@ const LibraryPage = () => {
           <ArrowLeft className="w-5 h-5 text-foreground" />
         </button>
         <div>
-          <h2 className="font-display text-xl">My library</h2>
-          <p className="text-xs font-body text-muted-foreground">{savedArtists.length}/5 artists saved</p>
+          <h2 className="font-display text-xl">我的素材库</h2>
+          <p className="text-xs font-body text-muted-foreground">已收藏 {savedArtists.length}/5 位艺术家</p>
         </div>
       </div>
 
@@ -63,12 +63,12 @@ const LibraryPage = () => {
       {/* Membership teaser */}
       <div className="rounded-lg bg-card p-6 border border-border note-shadow text-center animate-slide-up" style={{ animationDelay: "0.3s", animationFillMode: "both" }}>
         <Lock className="w-6 h-6 mx-auto text-accent mb-3" />
-        <h3 className="font-display text-base mb-2">Unlock more</h3>
+        <h3 className="font-display text-base mb-2">解锁更多</h3>
         <p className="text-xs font-body text-muted-foreground leading-relaxed mb-4">
-          Get unlimited artist slots, access past artists, and high-resolution exports with membership.
+          升级会员可获得无限艺术家位置、访问历史艺术家以及高清导出功能。
         </p>
         <button className="px-6 py-2.5 rounded-lg bg-accent text-accent-foreground font-body text-sm tracking-wide hover:opacity-90 gentle-transition">
-          Learn more
+          了解更多
         </button>
       </div>
     </div>

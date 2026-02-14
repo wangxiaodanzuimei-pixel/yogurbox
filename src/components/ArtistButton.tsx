@@ -10,7 +10,7 @@ interface ArtistButtonProps {
   color?: string;
 }
 
-const ArtistButton = ({ name, subtitle, bio, isActive, onClick, color }: ArtistButtonProps) => {
+const ArtistButton = ({ name, subtitle, bio, isActive, onClick }: ArtistButtonProps) => {
   const [showBio, setShowBio] = useState(false);
 
   return (
@@ -36,14 +36,13 @@ const ArtistButton = ({ name, subtitle, bio, isActive, onClick, color }: ArtistB
               setShowBio(!showBio);
             }}
             className={`p-1 rounded-full ${isActive ? "hover:bg-primary-foreground/10" : "hover:bg-muted"}`}
-            aria-label={`About ${name}`}
+            aria-label={`关于 ${name}`}
           >
             <Info className="w-3.5 h-3.5" />
           </button>
         </div>
       </button>
 
-      {/* Bio tooltip */}
       {showBio && (
         <div className="absolute bottom-full left-0 right-0 mb-2 p-4 rounded-lg bg-card note-shadow border border-border z-20 animate-slide-up">
           <p className="text-xs font-body text-foreground leading-relaxed">{bio}</p>
@@ -51,7 +50,7 @@ const ArtistButton = ({ name, subtitle, bio, isActive, onClick, color }: ArtistB
             onClick={() => setShowBio(false)}
             className="mt-2 text-[10px] text-muted-foreground uppercase tracking-widest hover:text-foreground"
           >
-            Close
+            关闭
           </button>
         </div>
       )}

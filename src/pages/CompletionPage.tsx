@@ -21,14 +21,14 @@ const CompletionPage = () => {
       date: dateStr,
       theme: "",
     });
-    toast("Saved to your album ✨", {
-      description: "Your diary note has been saved.",
+    toast("已保存到相册 ✨", {
+      description: "你的日记便签已保存。",
     });
   };
 
   const handleShare = () => {
-    toast("Share feature coming soon", {
-      description: "This will be available in a future update.",
+    toast("分享功能即将上线", {
+      description: "敬请期待后续更新。",
     });
   };
 
@@ -44,7 +44,7 @@ const CompletionPage = () => {
         <button onClick={() => navigate("/style")} className="p-2 -ml-2 rounded-full hover:bg-muted gentle-transition">
           <ArrowLeft className="w-5 h-5 text-foreground" />
         </button>
-        <h2 className="font-display text-lg">Your note</h2>
+        <h2 className="font-display text-lg">你的便签</h2>
         <button onClick={handleGoHome} className="p-2 -mr-2 rounded-full hover:bg-muted gentle-transition">
           <Home className="w-5 h-5 text-foreground" />
         </button>
@@ -62,7 +62,7 @@ const CompletionPage = () => {
           className="flex-1 py-3.5 rounded-lg bg-primary text-primary-foreground font-body text-sm tracking-wide flex items-center justify-center gap-2 note-shadow hover:note-shadow-hover gentle-transition"
         >
           <Download className="w-4 h-4" />
-          Save to album
+          保存到相册
         </button>
         <button
           onClick={handleShare}
@@ -75,7 +75,7 @@ const CompletionPage = () => {
       {/* Calendar */}
       <div className="animate-slide-up" style={{ animationDelay: "0.3s", animationFillMode: "both" }}>
         <div className="rounded-lg bg-card p-5 note-shadow border border-border">
-          <h3 className="font-display text-base mb-4 text-center">Your journey</h3>
+          <h3 className="font-display text-base mb-4 text-center">你的旅程</h3>
           <CalendarView entries={entries} />
         </div>
       </div>
