@@ -21,34 +21,30 @@ const StylePage = () => {
 
   return (
     <div className="min-h-screen bg-background px-6 py-8 max-w-lg mx-auto">
-      {/* Header */}
       <div className="flex items-center justify-between mb-6 animate-fade-in">
-        <button onClick={() => navigate("/")} className="p-2 -ml-2 rounded-full hover:bg-muted gentle-transition">
+        <button onClick={() => navigate("/")} className="p-2 -ml-2 rounded-xl hover:bg-muted gentle-transition">
           <ArrowLeft className="w-5 h-5 text-foreground" />
         </button>
-        <h2 className="font-display text-lg">选择风格</h2>
-        <button onClick={() => navigate("/library")} className="p-2 -mr-2 rounded-full hover:bg-muted gentle-transition">
+        <h2 className="font-display text-lg flex items-center gap-1.5">✨ 选择风格</h2>
+        <button onClick={() => navigate("/library")} className="p-2 -mr-2 rounded-xl hover:bg-muted gentle-transition">
           <BookOpen className="w-5 h-5 text-foreground" />
         </button>
       </div>
 
-      {/* Note preview */}
       <div className={`mb-6 animate-float-in gentle-transition ${isRegenerating ? "opacity-0 scale-95" : "opacity-100 scale-100"}`}>
         <NotePreview text={text} image={image} style={selectedStyle} layoutVariant={layoutVariant} />
       </div>
 
-      {/* Regenerate button */}
       <div className="flex justify-center mb-6">
         <button
           onClick={handleRegenerate}
-          className="flex items-center gap-2 px-4 py-2 rounded-full bg-card border border-border text-sm font-body text-muted-foreground hover:text-foreground hover:bg-muted gentle-transition"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-card border-2 border-border text-sm font-body text-muted-foreground hover:text-foreground hover:bg-muted hover:scale-105 gentle-transition"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${isRegenerating ? "animate-spin" : ""}`} />
           换一种排版
         </button>
       </div>
 
-      {/* Artist selection */}
       <div className="space-y-2 mb-6 animate-slide-up" style={{ animationDelay: "0.2s", animationFillMode: "both" }}>
         {artists.map((artist) => (
           <ArtistButton
@@ -64,10 +60,10 @@ const StylePage = () => {
 
         <button
           onClick={() => setSelectedStyle("geometric")}
-          className={`w-full px-4 py-3 rounded-lg text-left gentle-transition font-body ${
+          className={`w-full px-4 py-3 rounded-xl text-left gentle-transition font-body ${
             selectedStyle === "geometric"
               ? "bg-primary text-primary-foreground note-shadow"
-              : "bg-card text-foreground hover:bg-muted border border-border"
+              : "bg-card text-foreground hover:bg-muted border-2 border-border"
           }`}
         >
           <p className="font-display text-sm font-medium">{defaultTemplate.name}</p>
@@ -77,13 +73,12 @@ const StylePage = () => {
         </button>
       </div>
 
-      {/* Confirm button */}
       <div className="animate-slide-up" style={{ animationDelay: "0.3s", animationFillMode: "both" }}>
         <button
           onClick={() => navigate("/complete")}
-          className="w-full py-4 rounded-lg bg-primary text-primary-foreground font-body text-sm tracking-wide note-shadow hover:note-shadow-hover gentle-transition"
+          className="w-full py-4 rounded-2xl bg-primary text-primary-foreground font-body text-sm tracking-wide note-shadow hover:note-shadow-hover hover:scale-[1.01] gentle-transition"
         >
-          生成便签
+          生成便签 ✨
         </button>
       </div>
     </div>

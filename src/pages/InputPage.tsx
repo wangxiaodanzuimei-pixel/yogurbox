@@ -23,16 +23,14 @@ const InputPage = () => {
     }
   };
 
-  const processFile = (file: File) => {
-    const reader = new FileReader();
-    reader.onload = (ev) => setImage(ev.target?.result as string);
-    reader.readAsDataURL(file);
-    setShowImageMenu(false);
-  };
-
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) processFile(file);
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (ev) => setImage(ev.target?.result as string);
+      reader.readAsDataURL(file);
+      setShowImageMenu(false);
+    }
   };
 
   const handleRemoveBackground = async () => {
@@ -59,15 +57,17 @@ const InputPage = () => {
       {/* Header */}
       <div className="flex items-center justify-between mb-8 animate-fade-in">
         <div>
-          <h1 className="font-display text-2xl text-foreground mb-1">我的日记</h1>
-          <p className="text-sm font-body text-muted-foreground">轻声书写，精心装饰</p>
+          <h1 className="font-display text-2xl text-foreground mb-0.5 flex items-center gap-2">
+            我的日记 <span className="text-lg">📝</span>
+          </h1>
+          <p className="text-xs font-body text-muted-foreground">轻声书写，精心装饰 ♪</p>
         </div>
         <button
           onClick={() => navigate("/profile")}
-          className="w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center hover:bg-muted note-shadow gentle-transition"
+          className="w-10 h-10 rounded-full bg-card border-2 border-kawaii-pink/30 flex items-center justify-center hover:bg-muted note-shadow gentle-transition hover:scale-105"
           aria-label="个人中心"
         >
-          <User className="w-4 h-4 text-muted-foreground" />
+          <User className="w-4 h-4 text-primary" />
         </button>
       </div>
 
@@ -82,7 +82,7 @@ const InputPage = () => {
           value={text}
           onChange={(e) => handleTextChange(e.target.value)}
           placeholder="开始书写…"
-          className="w-full h-48 bg-card rounded-lg border border-border p-5 text-sm font-body text-foreground placeholder:text-muted-foreground/50 resize-none focus:outline-none focus:ring-2 focus:ring-primary/20 gentle-transition note-shadow"
+          className="w-full h-44 bg-card rounded-2xl border-2 border-border p-5 text-sm font-body text-foreground placeholder:text-muted-foreground/40 resize-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/30 gentle-transition note-shadow"
         />
         <div className="flex justify-end mt-2">
           <span className={`text-xs font-body ${wordCount > 180 ? "text-destructive" : "text-muted-foreground"}`}>
@@ -94,7 +94,7 @@ const InputPage = () => {
       {/* Image upload */}
       <div className="mb-8 animate-slide-up relative" style={{ animationDelay: "0.3s", animationFillMode: "both" }}>
         {image ? (
-          <div className="relative w-full h-40 rounded-lg overflow-hidden note-shadow">
+          <div className="relative w-full h-36 rounded-2xl overflow-hidden note-shadow border-2 border-border">
             <img
               src={image}
               alt="已上传"
@@ -110,14 +110,14 @@ const InputPage = () => {
               <button
                 onClick={handleRemoveBackground}
                 disabled={isRemoving}
-                className="p-1.5 rounded-full bg-foreground/60 text-primary-foreground hover:bg-foreground/80 gentle-transition disabled:opacity-50"
+                className="p-2 rounded-full bg-card/90 text-foreground hover:bg-card gentle-transition disabled:opacity-50 note-shadow"
                 title="移除背景"
               >
                 <Scissors className="w-3.5 h-3.5" />
               </button>
               <button
                 onClick={() => setImage(null)}
-                className="p-1.5 rounded-full bg-foreground/60 text-primary-foreground hover:bg-foreground/80 gentle-transition"
+                className="p-2 rounded-full bg-card/90 text-foreground hover:bg-card gentle-transition note-shadow"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -127,39 +127,39 @@ const InputPage = () => {
           <>
             <button
               onClick={() => setShowImageMenu(!showImageMenu)}
-              className="w-full py-8 rounded-lg border-2 border-dashed border-border hover:border-primary/30 hover:bg-card gentle-transition flex flex-col items-center gap-2"
+              className="w-full py-7 rounded-2xl border-2 border-dashed border-border hover:border-primary/30 hover:bg-card gentle-transition flex flex-col items-center gap-2"
             >
-              <ImagePlus className="w-5 h-5 text-muted-foreground" />
+              <div className="w-10 h-10 rounded-full bg-kawaii-pink/15 flex items-center justify-center">
+                <ImagePlus className="w-5 h-5 text-primary" />
+              </div>
               <span className="text-xs font-body text-muted-foreground">添加图片</span>
             </button>
 
             {showImageMenu && (
-              <div className="absolute top-full left-0 right-0 mt-2 rounded-lg bg-card border border-border note-shadow z-20 overflow-hidden animate-slide-up">
+              <div className="absolute top-full left-0 right-0 mt-2 rounded-2xl bg-card border-2 border-border note-shadow z-20 overflow-hidden animate-slide-up">
                 <button
-                  onClick={() => {
-                    fileRef.current?.click();
-                    setShowImageMenu(false);
-                  }}
+                  onClick={() => { fileRef.current?.click(); setShowImageMenu(false); }}
                   className="w-full px-4 py-3.5 flex items-center gap-3 hover:bg-muted gentle-transition text-left"
                 >
-                  <ImagePlus className="w-4 h-4 text-muted-foreground" />
+                  <div className="w-8 h-8 rounded-full bg-kawaii-blue/15 flex items-center justify-center">
+                    <ImagePlus className="w-4 h-4 text-kawaii-blue" />
+                  </div>
                   <div>
                     <p className="text-sm font-body text-foreground">从相册选择</p>
-                    <p className="text-[11px] font-body text-muted-foreground">选择已有的照片</p>
+                    <p className="text-[10px] font-body text-muted-foreground">选择已有的照片</p>
                   </div>
                 </button>
-                <div className="border-t border-border" />
+                <div className="border-t border-border mx-4" />
                 <button
-                  onClick={() => {
-                    cameraRef.current?.click();
-                    setShowImageMenu(false);
-                  }}
+                  onClick={() => { cameraRef.current?.click(); setShowImageMenu(false); }}
                   className="w-full px-4 py-3.5 flex items-center gap-3 hover:bg-muted gentle-transition text-left"
                 >
-                  <Camera className="w-4 h-4 text-muted-foreground" />
+                  <div className="w-8 h-8 rounded-full bg-kawaii-green/15 flex items-center justify-center">
+                    <Camera className="w-4 h-4 text-kawaii-green" />
+                  </div>
                   <div>
                     <p className="text-sm font-body text-foreground">拍照抠图</p>
-                    <p className="text-[11px] font-body text-muted-foreground">拍照并自动去除背景</p>
+                    <p className="text-[10px] font-body text-muted-foreground">拍照并自动去除背景</p>
                   </div>
                 </button>
               </div>
@@ -184,8 +184,7 @@ const InputPage = () => {
                   const resp = await fetch(dataUrl);
                   const blob = await resp.blob();
                   const result = await removeBackground(blob);
-                  const url = URL.createObjectURL(result);
-                  setImage(url);
+                  setImage(URL.createObjectURL(result));
                   toast("背景已移除 ✨");
                 } catch {
                   toast("照片已保存（背景移除不可用）");
@@ -209,9 +208,9 @@ const InputPage = () => {
         <button
           onClick={() => canProceed && navigate("/style")}
           disabled={!canProceed}
-          className={`w-full py-4 rounded-lg font-body text-sm tracking-wide flex items-center justify-center gap-2 gentle-transition ${
+          className={`w-full py-4 rounded-2xl font-body text-sm tracking-wide flex items-center justify-center gap-2 gentle-transition ${
             canProceed
-              ? "bg-primary text-primary-foreground note-shadow hover:note-shadow-hover"
+              ? "bg-primary text-primary-foreground note-shadow hover:note-shadow-hover hover:scale-[1.01]"
               : "bg-muted text-muted-foreground cursor-not-allowed"
           }`}
         >

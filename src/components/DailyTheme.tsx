@@ -29,18 +29,18 @@ const DailyTheme = ({ onThemeChange }: DailyThemeProps) => {
   };
 
   return (
-    <div className="flex items-center gap-3 rounded-lg bg-card px-5 py-4 note-shadow">
+    <div className="flex items-center gap-3 rounded-2xl bg-card border-2 border-border px-5 py-4 note-shadow">
       <div className="flex-1">
-        <p className="text-xs font-body uppercase tracking-widest text-muted-foreground mb-1">
-          今日主题
+        <p className="text-[10px] font-body tracking-widest text-muted-foreground mb-1 flex items-center gap-1">
+          <span>💭</span> 今日主题
         </p>
-        <p className={`font-display text-lg italic text-foreground gentle-transition ${isRefreshing ? "opacity-0 translate-y-1" : "opacity-100 translate-y-0"}`}>
+        <p className={`font-display text-base text-foreground gentle-transition ${isRefreshing ? "opacity-0 translate-y-1" : "opacity-100 translate-y-0"}`}>
           「{theme}」
         </p>
       </div>
       <button
         onClick={handleRefresh}
-        className="p-2 rounded-full hover:bg-muted gentle-transition"
+        className="p-2.5 rounded-xl hover:bg-muted gentle-transition hover:scale-105"
         aria-label="刷新主题"
       >
         <RefreshCw className={`w-4 h-4 text-muted-foreground ${isRefreshing ? "animate-spin" : ""}`} />
