@@ -188,21 +188,25 @@ const InputPage = () => {
         <div className="fixed inset-0 z-10" onClick={() => setShowImageMenu(false)} />
       )}
 
-      {/* Next button */}
-      <div className="animate-slide-up" style={{ animationDelay: "0.4s", animationFillMode: "both" }}>
-        <button
-          onClick={() => canProceed && navigate("/style")}
-          disabled={!canProceed}
-          className={`w-full py-4 rounded-2xl font-body text-sm tracking-wide flex items-center justify-center gap-2 gentle-transition ${
-            canProceed
-              ? "bg-primary text-primary-foreground note-shadow hover:note-shadow-hover hover:scale-[1.01]"
-              : "bg-muted text-muted-foreground cursor-not-allowed"
-          }`}
-        >
-          选择风格
-          <ArrowRight className="w-4 h-4" />
-        </button>
+      {/* Next button - fixed to bottom on mobile */}
+      <div className="fixed bottom-0 left-0 right-0 px-6 pb-6 pt-3 bg-gradient-to-t from-background via-background to-transparent z-30">
+        <div className="max-w-lg mx-auto">
+          <button
+            onClick={() => canProceed && navigate("/style")}
+            disabled={!canProceed}
+            className={`w-full py-4 rounded-2xl font-body text-sm tracking-wide flex items-center justify-center gap-2 gentle-transition ${
+              canProceed
+                ? "bg-primary text-primary-foreground note-shadow hover:note-shadow-hover hover:scale-[1.01]"
+                : "bg-muted text-muted-foreground cursor-not-allowed"
+            }`}
+          >
+            选择风格
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        </div>
       </div>
+      {/* Bottom spacer for fixed button */}
+      <div className="h-20" />
     </div>
   );
 };

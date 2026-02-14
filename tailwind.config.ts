@@ -12,8 +12,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ["Klee One", "cursive"],
-        body: ["Zen Maru Gothic", "sans-serif"],
+        display: ["system-ui", "-apple-system", "sans-serif"],
+        body: ["system-ui", "-apple-system", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",

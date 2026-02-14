@@ -29,7 +29,6 @@ export const artists = [
     color: "var(--artist-a)",
     icon: floraIcon,
     emoji: "🌸",
-    rarity: "SR",
   },
   {
     id: "sumi",
@@ -40,7 +39,6 @@ export const artists = [
     color: "var(--foreground)",
     icon: sumiIcon,
     emoji: "🖌️",
-    rarity: "SSR",
   },
 ];
 
