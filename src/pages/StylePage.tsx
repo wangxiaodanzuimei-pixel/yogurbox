@@ -78,7 +78,7 @@ const StylePage = () => {
           onClick={() => navigate("/complete")}
           className="w-full py-4 rounded-2xl bg-primary text-primary-foreground font-body text-sm tracking-wide note-shadow hover:note-shadow-hover hover:scale-[1.01] gentle-transition"
         >
-          生成便签 ✨
+          存下它 ✨
         </button>
       </div>
     </div>
