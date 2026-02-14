@@ -111,7 +111,7 @@ const InputPage = () => {
                 <p className="text-xs font-body text-foreground">正在移除背景…</p>
               </div>
             )}
-            <div className="absolute top-2 right-2 flex gap-1.5">
+            <div className="absolute top-2 right-2 flex gap-1.5 z-40">
               <button
                 onClick={handleRemoveBackground}
                 disabled={isRemoving}
@@ -145,7 +145,6 @@ const InputPage = () => {
                 <label
                   htmlFor="file-upload"
                   className="w-full px-4 py-3.5 flex items-center gap-3 hover:bg-muted gentle-transition text-left cursor-pointer"
-                  onClick={() => setShowImageMenu(false)}
                 >
                   <div className="w-8 h-8 rounded-full bg-kawaii-blue/15 flex items-center justify-center">
                     <ImagePlus className="w-4 h-4 text-kawaii-blue" />
@@ -159,7 +158,6 @@ const InputPage = () => {
                 <label
                   htmlFor="camera-upload"
                   className="w-full px-4 py-3.5 flex items-center gap-3 hover:bg-muted gentle-transition text-left cursor-pointer"
-                  onClick={() => setShowImageMenu(false)}
                 >
                   <div className="w-8 h-8 rounded-full bg-kawaii-green/15 flex items-center justify-center">
                     <Camera className="w-4 h-4 text-kawaii-green" />
