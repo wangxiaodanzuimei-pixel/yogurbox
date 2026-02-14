@@ -138,7 +138,7 @@ const InputPage = () => {
       <div className="flex items-center justify-between mb-8 animate-fade-in">
         <div>
           <h1 className="text-2xl text-foreground mb-0.5 flex items-center gap-2 font-mono">
-            我的日记 <span className="text-lg">📝</span>
+            鱼糕盒
           </h1>
           <p className="text-xs font-body text-muted-foreground">轻声书写，精心装饰 ♪</p>
         </div>
