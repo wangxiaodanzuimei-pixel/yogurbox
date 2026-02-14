@@ -43,7 +43,7 @@ const InputPage = () => {
       if (error) throw error;
       if (data?.image) {
         setImage(data.image);
-        toast.success("背景已移除 ✨");
+        toast.success("背景已移除 ✨", { duration: 3000 });
       } else {
         throw new Error("未返回处理后的图片");
       }
@@ -99,11 +99,11 @@ const InputPage = () => {
       {/* Image upload */}
       <div className="mb-8 animate-slide-up relative" style={{ animationDelay: "0.3s", animationFillMode: "both" }}>
         {image ? (
-          <div className="relative w-full h-36 rounded-2xl overflow-hidden note-shadow border-2 border-border">
+          <div className="relative w-full rounded-2xl overflow-hidden note-shadow border-2 border-border bg-muted/30 flex items-center justify-center" style={{ minHeight: '9rem', maxHeight: '16rem' }}>
             <img
               src={image}
               alt="已上传"
-              className={`w-full h-full object-cover gentle-transition ${isRemoving ? "opacity-50" : ""}`}
+              className={`max-w-full max-h-64 object-contain gentle-transition ${isRemoving ? "opacity-50" : ""}`}
             />
             {isRemoving && (
               <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/60">
