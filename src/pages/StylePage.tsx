@@ -1,15 +1,18 @@
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, RefreshCw, BookOpen } from "lucide-react";
+import { ArrowLeft, RefreshCw, BookOpen, Download } from "lucide-react";
 import NotePreview from "@/components/NotePreview";
+import ExportDialog from "@/components/ExportDialog";
 import ArtistButton from "@/components/ArtistButton";
 import { useDiaryStore } from "@/lib/diary-store";
 import { artists, defaultTemplate, type ArtistStyle } from "@/lib/diary-data";
+import { toast } from "sonner";
 import { useState } from "react";
 
 const StylePage = () => {
   const navigate = useNavigate();
-  const { text, image, selectedStyle, setSelectedStyle, layoutVariant, cycleLayout } = useDiaryStore();
+  const { text, image, selectedStyle, setSelectedStyle, layoutVariant, cycleLayout, mood, saveEntry, updateEntry, editingEntryId, reset } = useDiaryStore();
   const [isRegenerating, setIsRegenerating] = useState(false);
+  const [showExport, setShowExport] = useState(false);
 
   const handleRegenerate = () => {
     setIsRegenerating(true);
@@ -73,14 +76,42 @@ const StylePage = () => {
         </button>
       </div>
 
-      <div className="animate-slide-up" style={{ animationDelay: "0.3s", animationFillMode: "both" }}>
+      <div className="flex gap-3 animate-slide-up" style={{ animationDelay: "0.3s", animationFillMode: "both" }}>
         <button
-          onClick={() => navigate("/complete")}
-          className="w-full py-4 rounded-2xl bg-primary text-primary-foreground font-body text-sm tracking-wide note-shadow hover:note-shadow-hover hover:scale-[1.01] gentle-transition"
+          onClick={() => {
+            const today = new Date();
+            const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+            if (editingEntryId) {
+              updateEntry({ id: editingEntryId, text, image: image || undefined, style: selectedStyle, date: dateStr, theme: "", mood });
+              toast("已更新 ✨", { duration: 2000 });
+            } else {
+              saveEntry({ id: Date.now().toString(), text, image: image || undefined, style: selectedStyle, date: dateStr, theme: "", mood });
+              toast("已存下 ✨", { duration: 2000 });
+            }
+            reset();
+            navigate("/profile");
+          }}
+          className="flex-1 py-4 rounded-2xl bg-primary text-primary-foreground font-body text-sm tracking-wide note-shadow hover:note-shadow-hover hover:scale-[1.01] gentle-transition flex items-center justify-center gap-2"
         >
-          存下它 ✨
+          <Download className="w-4 h-4" />
+          存下它
+        </button>
+        <button
+          onClick={() => setShowExport(true)}
+          className="py-4 px-5 rounded-2xl bg-card text-foreground font-body text-sm border-2 border-border flex items-center justify-center gap-2 hover:bg-muted hover:scale-105 gentle-transition"
+        >
+          📤 导出
         </button>
       </div>
+
+      <ExportDialog
+        open={showExport}
+        onClose={() => setShowExport(false)}
+        text={text}
+        image={image}
+        style={selectedStyle}
+        layoutVariant={layoutVariant}
+      />
     </div>
   );
 };
