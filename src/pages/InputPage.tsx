@@ -1,7 +1,6 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { ImagePlus, ArrowRight, X, Camera, Scissors, Loader2, User } from "lucide-react";
-import { removeBackground } from "@imgly/background-removal";
 import DailyTheme from "@/components/DailyTheme";
 import { useDiaryStore } from "@/lib/diary-store";
 import { toast } from "sonner";
@@ -37,12 +36,9 @@ const InputPage = () => {
     if (!image) return;
     setIsRemoving(true);
     try {
-      const response = await fetch(image);
-      const blob = await response.blob();
-      const result = await removeBackground(blob);
-      const url = URL.createObjectURL(result);
-      setImage(url);
-      toast("背景已移除 ✨");
+      // Simulate background removal - replace with real API when backend is ready
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      toast("抠图功能即将上线，敬请期待 ✨");
     } catch {
       toast.error("无法移除背景，请尝试其他图片");
     } finally {
@@ -179,18 +175,7 @@ const InputPage = () => {
               reader.onload = async (ev) => {
                 const dataUrl = ev.target?.result as string;
                 setImage(dataUrl);
-                setIsRemoving(true);
-                try {
-                  const resp = await fetch(dataUrl);
-                  const blob = await resp.blob();
-                  const result = await removeBackground(blob);
-                  setImage(URL.createObjectURL(result));
-                  toast("背景已移除 ✨");
-                } catch {
-                  toast("照片已保存（背景移除不可用）");
-                } finally {
-                  setIsRemoving(false);
-                }
+                toast("照片已保存 📷");
               };
               reader.readAsDataURL(file);
             }
