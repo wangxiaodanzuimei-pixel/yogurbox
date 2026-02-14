@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { ImagePlus, ArrowRight, X, Camera, Scissors, Loader2 } from "lucide-react";
+import { ImagePlus, ArrowRight, X, Camera, Scissors, Loader2, User } from "lucide-react";
 import { removeBackground } from "@imgly/background-removal";
 import DailyTheme from "@/components/DailyTheme";
 import { useDiaryStore } from "@/lib/diary-store";
@@ -57,9 +57,18 @@ const InputPage = () => {
   return (
     <div className="min-h-screen bg-background px-6 py-8 max-w-lg mx-auto">
       {/* Header */}
-      <div className="mb-8 animate-fade-in">
-        <h1 className="font-display text-2xl text-foreground mb-1">Your diary</h1>
-        <p className="text-sm font-body text-muted-foreground">Write softly, decorate beautifully</p>
+      <div className="flex items-center justify-between mb-8 animate-fade-in">
+        <div>
+          <h1 className="font-display text-2xl text-foreground mb-1">Your diary</h1>
+          <p className="text-sm font-body text-muted-foreground">Write softly, decorate beautifully</p>
+        </div>
+        <button
+          onClick={() => navigate("/profile")}
+          className="w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center hover:bg-muted note-shadow gentle-transition"
+          aria-label="Profile"
+        >
+          <User className="w-4 h-4 text-muted-foreground" />
+        </button>
       </div>
 
       {/* Daily theme */}
