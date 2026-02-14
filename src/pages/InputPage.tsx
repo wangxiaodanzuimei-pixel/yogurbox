@@ -134,7 +134,7 @@ const InputPage = () => {
             {showImageMenu && (
               <div className="absolute top-full left-0 right-0 mt-2 rounded-2xl bg-card border-2 border-border note-shadow z-20 overflow-hidden animate-slide-up">
                 <button
-                  onClick={() => { fileRef.current?.click(); setShowImageMenu(false); }}
+                  onClick={() => { setShowImageMenu(false); setTimeout(() => fileRef.current?.click(), 100); }}
                   className="w-full px-4 py-3.5 flex items-center gap-3 hover:bg-muted gentle-transition text-left"
                 >
                   <div className="w-8 h-8 rounded-full bg-kawaii-blue/15 flex items-center justify-center">
@@ -147,7 +147,7 @@ const InputPage = () => {
                 </button>
                 <div className="border-t border-border mx-4" />
                 <button
-                  onClick={() => { cameraRef.current?.click(); setShowImageMenu(false); }}
+                  onClick={() => { setShowImageMenu(false); setTimeout(() => cameraRef.current?.click(), 100); }}
                   className="w-full px-4 py-3.5 flex items-center gap-3 hover:bg-muted gentle-transition text-left"
                 >
                   <div className="w-8 h-8 rounded-full bg-kawaii-green/15 flex items-center justify-center">
