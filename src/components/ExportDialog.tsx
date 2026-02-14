@@ -8,11 +8,12 @@ interface ExportDialogProps {
   onClose: () => void;
   text: string;
   image?: string | null;
+  images?: string[];
   style: ArtistStyle;
   layoutVariant: number;
 }
 
-const ExportDialog = ({ open, onClose, text, image, style, layoutVariant }: ExportDialogProps) => {
+const ExportDialog = ({ open, onClose, text, image, images, style, layoutVariant }: ExportDialogProps) => {
   const [ratio, setRatio] = useState<"1:1" | "4:3">("1:1");
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -74,7 +75,7 @@ const ExportDialog = ({ open, onClose, text, image, style, layoutVariant }: Expo
         >
           <div className="flex-1 flex items-center justify-center p-3">
             <div className={ratio === "4:3" ? "w-full max-w-[70%]" : "w-full"}>
-              <NotePreview text={text} image={image} style={style} layoutVariant={layoutVariant} />
+              <NotePreview text={text} image={image} images={images} style={style} layoutVariant={layoutVariant} />
             </div>
           </div>
           {/* Watermark - bottom right */}

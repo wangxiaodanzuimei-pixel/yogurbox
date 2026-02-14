@@ -6,6 +6,7 @@ import geometricDecoration from "@/assets/geometric-decoration.png";
 interface NotePreviewProps {
   text: string;
   image?: string | null;
+  images?: string[];
   style: ArtistStyle;
   layoutVariant: number;
 }
@@ -103,19 +104,21 @@ const CornerSticker = ({ emoji, position, delay }: { emoji: string; position: st
   </div>
 );
 
-const NotePreview = ({ text, image, style, layoutVariant }: NotePreviewProps) => {
+const NotePreview = ({ text, image, images, style, layoutVariant }: NotePreviewProps) => {
   const config = styleConfig[style];
   const decoration = decorationMap[style];
+  // Support both legacy single image and new images array
+  const resolvedImage = images && images.length > 0 ? images[0] : image;
   const displayText = text || "你的文字将出现在这里…";
   const dateStr = new Date().toLocaleDateString("zh-CN", { month: "long", day: "numeric" });
   const weekday = new Date().toLocaleDateString("zh-CN", { weekday: "short" });
 
   const renderImage = (className: string, containerClass: string) => {
-    if (!image) return null;
+    if (!resolvedImage) return null;
     return (
       <div className={`relative overflow-hidden ${containerClass}`}>
         <WashiTape style={style} />
-        <img src={image} alt="" className={`w-full h-full object-contain ${className}`} />
+        <img src={resolvedImage} alt="" className={`w-full h-full object-contain ${className}`} />
       </div>
     );
   };
@@ -212,10 +215,10 @@ const NotePreview = ({ text, image, style, layoutVariant }: NotePreviewProps) =>
 
         {layoutVariant === 3 && (
           <div className="flex-1 flex flex-col items-center justify-center min-h-0 text-center">
-            {image && (
+            {resolvedImage && (
               <div className="relative mb-3">
                 <div className="w-16 h-16 rounded-full overflow-hidden ring-2 ring-border/30 bg-muted/20">
-                  <img src={image} alt="" className="w-full h-full object-cover" />
+                  <img src={resolvedImage} alt="" className="w-full h-full object-cover" />
                 </div>
                 {/* Cute frame decoration */}
                 <div className="absolute -top-1 -right-1 text-xs" style={{ animation: "sparkle 2s ease-in-out infinite" }}>✨</div>
@@ -238,9 +241,9 @@ const NotePreview = ({ text, image, style, layoutVariant }: NotePreviewProps) =>
 
         {layoutVariant === 5 && (
           <div className="flex-1 flex flex-col justify-end min-h-0 relative">
-            {image && (
+            {resolvedImage && (
               <div className="absolute inset-0 -m-5 mt-0 rounded-lg overflow-hidden">
-                <img src={image} alt="" className="w-full h-full object-cover opacity-30" />
+                <img src={resolvedImage} alt="" className="w-full h-full object-cover opacity-30" />
               </div>
             )}
             <div className="relative bg-card/80 backdrop-blur-sm rounded-lg p-3 border border-border/30">

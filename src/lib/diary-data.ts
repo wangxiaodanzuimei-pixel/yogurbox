@@ -63,6 +63,7 @@ export interface DiaryEntry {
   id: string;
   text: string;
   image?: string;
+  images?: string[];
   style: ArtistStyle;
   date: string;
   theme: string;

@@ -8,17 +8,17 @@ import { useState } from "react";
 
 const CompletionPage = () => {
   const navigate = useNavigate();
-  const { text, image, selectedStyle, layoutVariant, mood, saveEntry, updateEntry, editingEntryId, reset } = useDiaryStore();
+  const { text, image, images, selectedStyle, layoutVariant, mood, saveEntry, updateEntry, editingEntryId, reset } = useDiaryStore();
   const [showExport, setShowExport] = useState(false);
 
   const handleSave = () => {
     const today = new Date();
     const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
     if (editingEntryId) {
-      updateEntry({ id: editingEntryId, text, image: image || undefined, style: selectedStyle, date: dateStr, theme: "", mood });
+      updateEntry({ id: editingEntryId, text, image: image || undefined, images, style: selectedStyle, date: dateStr, theme: "", mood });
       toast("已更新 ✨", { duration: 2000 });
     } else {
-      saveEntry({ id: Date.now().toString(), text, image: image || undefined, style: selectedStyle, date: dateStr, theme: "", mood });
+      saveEntry({ id: Date.now().toString(), text, image: image || undefined, images, style: selectedStyle, date: dateStr, theme: "", mood });
       toast("已存下 ✨", { duration: 2000 });
     }
     reset();
@@ -38,7 +38,7 @@ const CompletionPage = () => {
       </div>
 
       <div className="mb-6 animate-float-in">
-        <NotePreview text={text} image={image} style={selectedStyle} layoutVariant={layoutVariant} />
+        <NotePreview text={text} image={image} images={images} style={selectedStyle} layoutVariant={layoutVariant} />
       </div>
 
       <div className="flex gap-3 mb-10 animate-slide-up" style={{ animationDelay: "0.2s", animationFillMode: "both" }}>
@@ -62,6 +62,7 @@ const CompletionPage = () => {
         onClose={() => setShowExport(false)}
         text={text}
         image={image}
+        images={images}
         style={selectedStyle}
         layoutVariant={layoutVariant}
       />
