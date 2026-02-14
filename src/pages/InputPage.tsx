@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, X, Camera, Scissors, Loader2, User, RefreshCw, Check, Plus } from "lucide-react";
+import { ArrowRight, X, Camera, ImagePlus, Scissors, Loader2, User, RefreshCw, Check, Plus } from "lucide-react";
 import MoodPicker from "@/components/MoodPicker";
 import OnboardingOverlay from "@/components/OnboardingOverlay";
 import { useDiaryStore } from "@/lib/diary-store";
@@ -259,14 +259,25 @@ const InputPage = () => {
         {/* Camera / Add button */}
         {images.length === 0 ? (
           <div className="relative">
-            <button
-              onClick={() => cameraRef.current?.click()}
-              className="w-full py-7 rounded-2xl border-2 border-dashed border-border hover:border-primary/30 hover:bg-card gentle-transition flex flex-col items-center gap-2">
-              <div className="w-10 h-10 rounded-full bg-kawaii-green/15 flex items-center justify-center">
-                <Camera className="w-5 h-5 text-kawaii-green" />
-              </div>
-              <span className="text-xs font-body text-muted-foreground">拍照</span>
-            </button>
+            <div className="w-full py-5 rounded-2xl border-2 border-dashed border-border flex items-center justify-center gap-6">
+              <button
+                onClick={() => cameraRef.current?.click()}
+                className="flex flex-col items-center gap-1.5 hover:scale-105 gentle-transition">
+                <div className="w-10 h-10 rounded-full bg-kawaii-green/15 flex items-center justify-center">
+                  <Camera className="w-5 h-5 text-kawaii-green" />
+                </div>
+                <span className="text-xs font-body text-muted-foreground">拍照</span>
+              </button>
+              <div className="w-px h-10 bg-border" />
+              <button
+                onClick={() => fileRef.current?.click()}
+                className="flex flex-col items-center gap-1.5 hover:scale-105 gentle-transition">
+                <div className="w-10 h-10 rounded-full bg-kawaii-pink/15 flex items-center justify-center">
+                  <ImagePlus className="w-5 h-5 text-kawaii-pink" />
+                </div>
+                <span className="text-xs font-body text-muted-foreground">相册</span>
+              </button>
+            </div>
 
             {/* Auto remove bg toggle */}
             <button
@@ -280,14 +291,22 @@ const InputPage = () => {
             </button>
           </div>
         ) : images.length < MAX_IMAGES ? (
-          <button
-            onClick={() => cameraRef.current?.click()}
-            className="w-full py-4 rounded-2xl border-2 border-dashed border-border hover:border-primary/30 hover:bg-card gentle-transition flex items-center justify-center gap-2">
-            <Plus className="w-4 h-4 text-muted-foreground" />
-            <span className="text-xs font-body text-muted-foreground">
-              添加回忆 ({images.length}/{MAX_IMAGES})
-            </span>
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => cameraRef.current?.click()}
+              className="flex-1 py-3 rounded-2xl border-2 border-dashed border-border hover:border-primary/30 hover:bg-card gentle-transition flex items-center justify-center gap-2">
+              <Camera className="w-3.5 h-3.5 text-muted-foreground" />
+              <span className="text-xs font-body text-muted-foreground">拍照</span>
+            </button>
+            <button
+              onClick={() => fileRef.current?.click()}
+              className="flex-1 py-3 rounded-2xl border-2 border-dashed border-border hover:border-primary/30 hover:bg-card gentle-transition flex items-center justify-center gap-2">
+              <ImagePlus className="w-3.5 h-3.5 text-muted-foreground" />
+              <span className="text-xs font-body text-muted-foreground">
+                相册 ({images.length}/{MAX_IMAGES})
+              </span>
+            </button>
+          </div>
         ) : (
           <p className="text-center text-[10px] font-body text-muted-foreground/50 py-2">
             已添加 {MAX_IMAGES}/{MAX_IMAGES} 张照片 ✨
