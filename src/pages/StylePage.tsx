@@ -19,10 +19,6 @@ const StylePage = () => {
     }, 400);
   };
 
-  const handleConfirm = () => {
-    navigate("/complete");
-  };
-
   return (
     <div className="min-h-screen bg-background px-6 py-8 max-w-lg mx-auto">
       {/* Header */}
@@ -30,7 +26,7 @@ const StylePage = () => {
         <button onClick={() => navigate("/")} className="p-2 -ml-2 rounded-full hover:bg-muted gentle-transition">
           <ArrowLeft className="w-5 h-5 text-foreground" />
         </button>
-        <h2 className="font-display text-lg">Choose a style</h2>
+        <h2 className="font-display text-lg">选择风格</h2>
         <button onClick={() => navigate("/library")} className="p-2 -mr-2 rounded-full hover:bg-muted gentle-transition">
           <BookOpen className="w-5 h-5 text-foreground" />
         </button>
@@ -48,7 +44,7 @@ const StylePage = () => {
           className="flex items-center gap-2 px-4 py-2 rounded-full bg-card border border-border text-sm font-body text-muted-foreground hover:text-foreground hover:bg-muted gentle-transition"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${isRegenerating ? "animate-spin" : ""}`} />
-          Regenerate layout
+          换一种排版
         </button>
       </div>
 
@@ -66,7 +62,6 @@ const StylePage = () => {
           />
         ))}
 
-        {/* Default template */}
         <button
           onClick={() => setSelectedStyle("geometric")}
           className={`w-full px-4 py-3 rounded-lg text-left gentle-transition font-body ${
@@ -85,10 +80,10 @@ const StylePage = () => {
       {/* Confirm button */}
       <div className="animate-slide-up" style={{ animationDelay: "0.3s", animationFillMode: "both" }}>
         <button
-          onClick={handleConfirm}
+          onClick={() => navigate("/complete")}
           className="w-full py-4 rounded-lg bg-primary text-primary-foreground font-body text-sm tracking-wide note-shadow hover:note-shadow-hover gentle-transition"
         >
-          Create note
+          生成便签
         </button>
       </div>
     </div>

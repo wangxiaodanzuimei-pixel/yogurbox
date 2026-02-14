@@ -44,9 +44,9 @@ const InputPage = () => {
       const result = await removeBackground(blob);
       const url = URL.createObjectURL(result);
       setImage(url);
-      toast("Background removed ✨");
+      toast("背景已移除 ✨");
     } catch {
-      toast.error("Couldn't remove background. Try a different image.");
+      toast.error("无法移除背景，请尝试其他图片");
     } finally {
       setIsRemoving(false);
     }
@@ -59,13 +59,13 @@ const InputPage = () => {
       {/* Header */}
       <div className="flex items-center justify-between mb-8 animate-fade-in">
         <div>
-          <h1 className="font-display text-2xl text-foreground mb-1">Your diary</h1>
-          <p className="text-sm font-body text-muted-foreground">Write softly, decorate beautifully</p>
+          <h1 className="font-display text-2xl text-foreground mb-1">我的日记</h1>
+          <p className="text-sm font-body text-muted-foreground">轻声书写，精心装饰</p>
         </div>
         <button
           onClick={() => navigate("/profile")}
           className="w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center hover:bg-muted note-shadow gentle-transition"
-          aria-label="Profile"
+          aria-label="个人中心"
         >
           <User className="w-4 h-4 text-muted-foreground" />
         </button>
@@ -81,12 +81,12 @@ const InputPage = () => {
         <textarea
           value={text}
           onChange={(e) => handleTextChange(e.target.value)}
-          placeholder="Begin writing…"
+          placeholder="开始书写…"
           className="w-full h-48 bg-card rounded-lg border border-border p-5 text-sm font-body text-foreground placeholder:text-muted-foreground/50 resize-none focus:outline-none focus:ring-2 focus:ring-primary/20 gentle-transition note-shadow"
         />
         <div className="flex justify-end mt-2">
           <span className={`text-xs font-body ${wordCount > 180 ? "text-destructive" : "text-muted-foreground"}`}>
-            {wordCount}/200 words
+            {wordCount}/200 字
           </span>
         </div>
       </div>
@@ -97,13 +97,13 @@ const InputPage = () => {
           <div className="relative w-full h-40 rounded-lg overflow-hidden note-shadow">
             <img
               src={image}
-              alt="Uploaded"
+              alt="已上传"
               className={`w-full h-full object-cover gentle-transition ${isRemoving ? "opacity-50" : ""}`}
             />
             {isRemoving && (
               <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/60">
                 <Loader2 className="w-6 h-6 text-primary animate-spin mb-2" />
-                <p className="text-xs font-body text-foreground">Removing background…</p>
+                <p className="text-xs font-body text-foreground">正在移除背景…</p>
               </div>
             )}
             <div className="absolute top-2 right-2 flex gap-1.5">
@@ -111,7 +111,7 @@ const InputPage = () => {
                 onClick={handleRemoveBackground}
                 disabled={isRemoving}
                 className="p-1.5 rounded-full bg-foreground/60 text-primary-foreground hover:bg-foreground/80 gentle-transition disabled:opacity-50"
-                title="Remove background"
+                title="移除背景"
               >
                 <Scissors className="w-3.5 h-3.5" />
               </button>
@@ -130,10 +130,9 @@ const InputPage = () => {
               className="w-full py-8 rounded-lg border-2 border-dashed border-border hover:border-primary/30 hover:bg-card gentle-transition flex flex-col items-center gap-2"
             >
               <ImagePlus className="w-5 h-5 text-muted-foreground" />
-              <span className="text-xs font-body text-muted-foreground">Add an image</span>
+              <span className="text-xs font-body text-muted-foreground">添加图片</span>
             </button>
 
-            {/* Image source menu */}
             {showImageMenu && (
               <div className="absolute top-full left-0 right-0 mt-2 rounded-lg bg-card border border-border note-shadow z-20 overflow-hidden animate-slide-up">
                 <button
@@ -145,8 +144,8 @@ const InputPage = () => {
                 >
                   <ImagePlus className="w-4 h-4 text-muted-foreground" />
                   <div>
-                    <p className="text-sm font-body text-foreground">Choose from album</p>
-                    <p className="text-[11px] font-body text-muted-foreground">Select an existing photo</p>
+                    <p className="text-sm font-body text-foreground">从相册选择</p>
+                    <p className="text-[11px] font-body text-muted-foreground">选择已有的照片</p>
                   </div>
                 </button>
                 <div className="border-t border-border" />
@@ -159,21 +158,15 @@ const InputPage = () => {
                 >
                   <Camera className="w-4 h-4 text-muted-foreground" />
                   <div>
-                    <p className="text-sm font-body text-foreground">Take a photo</p>
-                    <p className="text-[11px] font-body text-muted-foreground">Use camera & auto remove background</p>
+                    <p className="text-sm font-body text-foreground">拍照抠图</p>
+                    <p className="text-[11px] font-body text-muted-foreground">拍照并自动去除背景</p>
                   </div>
                 </button>
               </div>
             )}
           </>
         )}
-        <input
-          ref={fileRef}
-          type="file"
-          accept="image/*"
-          onChange={handleImageUpload}
-          className="hidden"
-        />
+        <input ref={fileRef} type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
         <input
           ref={cameraRef}
           type="file"
@@ -186,7 +179,6 @@ const InputPage = () => {
               reader.onload = async (ev) => {
                 const dataUrl = ev.target?.result as string;
                 setImage(dataUrl);
-                // Auto remove background for camera photos
                 setIsRemoving(true);
                 try {
                   const resp = await fetch(dataUrl);
@@ -194,9 +186,9 @@ const InputPage = () => {
                   const result = await removeBackground(blob);
                   const url = URL.createObjectURL(result);
                   setImage(url);
-                  toast("Background removed ✨");
+                  toast("背景已移除 ✨");
                 } catch {
-                  toast("Photo saved (background removal unavailable)");
+                  toast("照片已保存（背景移除不可用）");
                 } finally {
                   setIsRemoving(false);
                 }
@@ -208,7 +200,6 @@ const InputPage = () => {
         />
       </div>
 
-      {/* Click outside to close menu */}
       {showImageMenu && (
         <div className="fixed inset-0 z-10" onClick={() => setShowImageMenu(false)} />
       )}
@@ -224,7 +215,7 @@ const InputPage = () => {
               : "bg-muted text-muted-foreground cursor-not-allowed"
           }`}
         >
-          Choose style
+          选择风格
           <ArrowRight className="w-4 h-4" />
         </button>
       </div>

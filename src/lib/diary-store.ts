@@ -37,7 +37,7 @@ export const useDiaryStore = create<DiaryState>((set, get) => ({
   setImage: (image) => set({ image }),
   setTheme: (theme) => set({ theme }),
   setSelectedStyle: (style) => set({ selectedStyle: style }),
-  cycleLayout: () => set((s) => ({ layoutVariant: (s.layoutVariant + 1) % 3 })),
+  cycleLayout: () => set((s) => ({ layoutVariant: (s.layoutVariant + 1) % 6 })),
   saveEntry: (entry) => set((s) => ({ entries: [...s.entries, entry] })),
   toggleSavedArtist: (artistId) => {
     const { savedArtists } = get();

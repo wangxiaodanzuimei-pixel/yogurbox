@@ -16,7 +16,7 @@ const CalendarView = ({ entries }: CalendarViewProps) => {
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const today = new Date();
 
-  const monthName = currentDate.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+  const monthName = currentDate.toLocaleDateString("zh-CN", { year: "numeric", month: "long" });
 
   const prevMonth = () => setCurrentDate(new Date(year, month - 1, 1));
   const nextMonth = () => setCurrentDate(new Date(year, month + 1, 1));
@@ -33,7 +33,6 @@ const CalendarView = ({ entries }: CalendarViewProps) => {
 
   return (
     <div className="w-full max-w-sm mx-auto">
-      {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <button onClick={prevMonth} className="p-2 rounded-full hover:bg-muted gentle-transition">
           <ChevronLeft className="w-4 h-4 text-muted-foreground" />
@@ -44,16 +43,14 @@ const CalendarView = ({ entries }: CalendarViewProps) => {
         </button>
       </div>
 
-      {/* Weekday headers */}
       <div className="grid grid-cols-7 gap-1 mb-2">
-        {["S", "M", "T", "W", "T", "F", "S"].map((d, i) => (
-          <div key={i} className="text-center text-[10px] font-body text-muted-foreground uppercase tracking-widest">
+        {["日", "一", "二", "三", "四", "五", "六"].map((d, i) => (
+          <div key={i} className="text-center text-[10px] font-body text-muted-foreground">
             {d}
           </div>
         ))}
       </div>
 
-      {/* Days */}
       <div className="grid grid-cols-7 gap-1">
         {Array.from({ length: firstDay }).map((_, i) => (
           <div key={`empty-${i}`} />
