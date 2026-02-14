@@ -8,8 +8,7 @@ interface MoodPickerProps {
 const MoodPicker = ({ selected, onSelect }: MoodPickerProps) => {
   return (
     <div className="rounded-2xl bg-card border-2 border-border px-5 py-4 note-shadow">
-      <p className="text-[10px] font-body tracking-widest text-muted-foreground mb-3 flex items-center gap-1">🎭 今日心情
-
+      <p className="text-[10px] font-body tracking-widest text-muted-foreground mb-3 flex items-center gap-1">
         <span>🎭</span> 今日心情
       </p>
       <div className="flex flex-wrap gap-2">
