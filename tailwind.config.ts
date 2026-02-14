@@ -121,6 +121,11 @@ export default {
           "0%, 100%": { opacity: "0", transform: "scale(0.5)" },
           "50%": { opacity: "1", transform: "scale(1)" },
         },
+        "stamp-in": {
+          "0%": { transform: "scale(2) rotate(-15deg)", opacity: "0" },
+          "60%": { transform: "scale(0.9) rotate(3deg)", opacity: "1" },
+          "100%": { transform: "scale(1) rotate(0deg)", opacity: "1" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
