@@ -22,7 +22,7 @@ export const dailyThemes = [
 export const artists = [
   {
     id: "flora",
-    name: "花语",
+    name: "mochi & friends",
     subtitle: "水彩植物画师",
     bio: "花语从压制的野花和复古植物插画中汲取灵感。她的装饰以精致的花瓣、蔓延的藤蔓和柔和的水彩晕染为特色。",
     style: "floral" as const,
