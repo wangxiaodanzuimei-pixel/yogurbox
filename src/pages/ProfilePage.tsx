@@ -38,14 +38,6 @@ const ProfilePage = () => {
           <p className="text-xs font-body text-foreground font-medium">素材库</p>
           <p className="text-[10px] font-body text-muted-foreground mt-0.5">我的画师</p>
         </button>
-        <button
-          onClick={() => navigate("/complete")}
-          className="flex-1 py-4 px-4 rounded-2xl bg-card border-2 border-border note-shadow hover:bg-muted hover:scale-[1.02] gentle-transition text-center"
-        >
-          <span className="text-xl mb-1 block">📅</span>
-          <p className="text-xs font-body text-foreground font-medium">日历</p>
-          <p className="text-[10px] font-body text-muted-foreground mt-0.5">月度视图</p>
-        </button>
       </div>
 
       <div className="animate-slide-up" style={{ animationDelay: "0.2s", animationFillMode: "both" }}>

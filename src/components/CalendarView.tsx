@@ -71,7 +71,7 @@ const CalendarView = ({ entries, onDateClick }: CalendarViewProps) => {
               } ${entry ? "bg-accent/20 cursor-pointer hover:bg-accent/30" : "cursor-default"}`}
             >
               <span className="text-[10px] text-muted-foreground">{day}</span>
-              {entry && <span className="text-sm mt-0.5">{getIcon(day)}</span>}
+              {entry && <span className="text-sm mt-0.5">{entry.mood || getIcon(day)}</span>}
             </button>
           );
         })}

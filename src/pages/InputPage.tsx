@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { ImagePlus, ArrowRight, X, Camera, Scissors, Loader2, User } from "lucide-react";
 import DailyTheme from "@/components/DailyTheme";
+import MoodPicker from "@/components/MoodPicker";
 import { useDiaryStore } from "@/lib/diary-store";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -10,7 +11,7 @@ const InputPage = () => {
   const navigate = useNavigate();
   const fileRef = useRef<HTMLInputElement>(null);
   const cameraRef = useRef<HTMLInputElement>(null);
-  const { text, setText, image, setImage, setTheme } = useDiaryStore();
+  const { text, setText, image, setImage, setTheme, mood, setMood } = useDiaryStore();
   const [wordCount, setWordCount] = useState(0);
   const [isRemoving, setIsRemoving] = useState(false);
   const [showImageMenu, setShowImageMenu] = useState(false);
@@ -77,8 +78,13 @@ const InputPage = () => {
       </div>
 
       {/* Daily theme */}
-      <div className="mb-6 animate-slide-up" style={{ animationDelay: "0.1s", animationFillMode: "both" }}>
+      <div className="mb-4 animate-slide-up" style={{ animationDelay: "0.1s", animationFillMode: "both" }}>
         <DailyTheme onThemeChange={setTheme} />
+      </div>
+
+      {/* Mood picker */}
+      <div className="mb-6 animate-slide-up" style={{ animationDelay: "0.15s", animationFillMode: "both" }}>
+        <MoodPicker selected={mood} onSelect={setMood} />
       </div>
 
       {/* Text input */}
