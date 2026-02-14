@@ -140,7 +140,7 @@ const InputPage = () => {
           <h1 className="text-2xl text-foreground mb-0.5 flex items-center gap-2 font-mono">鱼糕小盒子
             <span className="text-lg">📝</span>
           </h1>
-          <p className="text-xs font-body text-muted-foreground">我会精心装饰你的书写 ♪</p>
+          <p className="text-xs font-body text-muted-foreground">精心装饰你的碎碎念 ♪</p>
         </div>
         <button
           id="onboard-profile"
