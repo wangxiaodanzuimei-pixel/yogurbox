@@ -18,4 +18,12 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    rollupOptions: {
+      external: ["onnxruntime-web/webgpu"],
+    },
+  },
+  optimizeDeps: {
+    exclude: ["onnxruntime-web"],
+  },
 }));
