@@ -133,9 +133,10 @@ const InputPage = () => {
 
             {showImageMenu && (
               <div className="absolute top-full left-0 right-0 mt-2 rounded-2xl bg-card border-2 border-border note-shadow z-20 overflow-hidden animate-slide-up">
-                <button
-                  onClick={() => { setShowImageMenu(false); setTimeout(() => fileRef.current?.click(), 100); }}
-                  className="w-full px-4 py-3.5 flex items-center gap-3 hover:bg-muted gentle-transition text-left"
+                <label
+                  htmlFor="file-upload"
+                  className="w-full px-4 py-3.5 flex items-center gap-3 hover:bg-muted gentle-transition text-left cursor-pointer"
+                  onClick={() => setShowImageMenu(false)}
                 >
                   <div className="w-8 h-8 rounded-full bg-kawaii-blue/15 flex items-center justify-center">
                     <ImagePlus className="w-4 h-4 text-kawaii-blue" />
@@ -144,11 +145,12 @@ const InputPage = () => {
                     <p className="text-sm font-body text-foreground">从相册选择</p>
                     <p className="text-[10px] font-body text-muted-foreground">选择已有的照片</p>
                   </div>
-                </button>
+                </label>
                 <div className="border-t border-border mx-4" />
-                <button
-                  onClick={() => { setShowImageMenu(false); setTimeout(() => cameraRef.current?.click(), 100); }}
-                  className="w-full px-4 py-3.5 flex items-center gap-3 hover:bg-muted gentle-transition text-left"
+                <label
+                  htmlFor="camera-upload"
+                  className="w-full px-4 py-3.5 flex items-center gap-3 hover:bg-muted gentle-transition text-left cursor-pointer"
+                  onClick={() => setShowImageMenu(false)}
                 >
                   <div className="w-8 h-8 rounded-full bg-kawaii-green/15 flex items-center justify-center">
                     <Camera className="w-4 h-4 text-kawaii-green" />
@@ -157,13 +159,13 @@ const InputPage = () => {
                     <p className="text-sm font-body text-foreground">拍照抠图</p>
                     <p className="text-[10px] font-body text-muted-foreground">拍照并自动去除背景</p>
                   </div>
-                </button>
+                </label>
               </div>
             )}
           </>
         )}
-        <input ref={fileRef} type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
-        <input
+        <input id="file-upload" ref={fileRef} type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+        <input id="camera-upload"
           ref={cameraRef}
           type="file"
           accept="image/*"
