@@ -1,11 +1,11 @@
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Clock } from "lucide-react";
+import { ArrowLeft, Clock, Pencil } from "lucide-react";
 import { useDiaryStore } from "@/lib/diary-store";
 import type { DiaryEntry } from "@/lib/diary-data";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
-  const { entries } = useDiaryStore();
+  const { entries, loadEntry } = useDiaryStore();
 
   const grouped = entries.reduce<Record<string, DiaryEntry[]>>((acc, entry) => {
     const date = new Date(entry.date);
@@ -16,6 +16,11 @@ const ProfilePage = () => {
   }, {});
 
   const sortedMonths = Object.keys(grouped).sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
+
+  const handleEdit = (entry: DiaryEntry) => {
+    loadEntry(entry);
+    navigate("/");
+  };
 
   return (
     <div className="min-h-screen bg-background px-6 py-8 max-w-lg mx-auto">
@@ -76,7 +81,7 @@ const ProfilePage = () => {
                     const date = new Date(entry.date);
                     const dayStr = date.toLocaleDateString("zh-CN", { weekday: "short", day: "numeric" });
                     return (
-                      <div key={entry.id} className="relative rounded-2xl bg-card border-2 border-border p-4 note-shadow hover:note-shadow-hover gentle-transition">
+                      <div key={entry.id} className="relative rounded-2xl bg-card border-2 border-border p-4 note-shadow hover:note-shadow-hover gentle-transition group">
                         <div className="absolute left-[-27px] top-5 w-2.5 h-2.5 rounded-full bg-kawaii-yellow border-2 border-card" />
                         <div className="flex items-start gap-3">
                           {entry.image && (
@@ -85,8 +90,18 @@ const ProfilePage = () => {
                             </div>
                           )}
                           <div className="flex-1 min-w-0">
-                            <p className="text-[10px] font-body text-muted-foreground tracking-widest mb-1">{dayStr}</p>
+                            <div className="flex items-center justify-between mb-1">
+                              <p className="text-[10px] font-body text-muted-foreground tracking-widest">{dayStr}</p>
+                              <button
+                                onClick={() => handleEdit(entry)}
+                                className="p-1.5 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground gentle-transition opacity-0 group-hover:opacity-100"
+                                title="编辑"
+                              >
+                                <Pencil className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
                             <p className="text-sm font-body text-foreground leading-relaxed line-clamp-3">{entry.text}</p>
+                            {entry.mood && <span className="text-sm mt-1 inline-block">{entry.mood}</span>}
                           </div>
                         </div>
                       </div>

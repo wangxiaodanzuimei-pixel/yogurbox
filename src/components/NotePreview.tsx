@@ -121,7 +121,7 @@ const NotePreview = ({ text, image, style, layoutVariant }: NotePreviewProps) =>
   };
 
   return (
-    <div className={`relative w-full max-w-xs mx-auto aspect-[4/5] rounded-2xl overflow-hidden note-shadow gentle-transition ${config.card}`}>
+    <div className={`relative w-full max-w-xs mx-auto aspect-square rounded-2xl overflow-hidden note-shadow gentle-transition ${config.card}`}>
       {/* Paper texture overlay */}
       <div className={`absolute inset-0 pointer-events-none opacity-60 ${config.paperTexture}`} />
 

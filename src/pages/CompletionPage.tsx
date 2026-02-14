@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Download, Share2, ArrowLeft, Home, X } from "lucide-react";
 import NotePreview from "@/components/NotePreview";
+import ExportDialog from "@/components/ExportDialog";
 import CalendarView from "@/components/CalendarView";
 import { useDiaryStore } from "@/lib/diary-store";
 import { toast } from "sonner";
@@ -9,14 +10,20 @@ import { useState } from "react";
 
 const CompletionPage = () => {
   const navigate = useNavigate();
-  const { text, image, selectedStyle, layoutVariant, mood, entries, saveEntry, reset } = useDiaryStore();
+  const { text, image, selectedStyle, layoutVariant, mood, entries, saveEntry, updateEntry, editingEntryId, reset } = useDiaryStore();
   const [selectedEntry, setSelectedEntry] = useState<DiaryEntry | null>(null);
+  const [showExport, setShowExport] = useState(false);
 
   const handleSave = () => {
     const today = new Date();
     const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
-    saveEntry({ id: Date.now().toString(), text, image: image || undefined, style: selectedStyle, date: dateStr, theme: "", mood });
-    toast("已保存到相册 ✨", { description: "你的日记便签已保存～" });
+    if (editingEntryId) {
+      updateEntry({ id: editingEntryId, text, image: image || undefined, style: selectedStyle, date: dateStr, theme: "", mood });
+      toast("已更新 ✨", { description: "日记已成功修改～" });
+    } else {
+      saveEntry({ id: Date.now().toString(), text, image: image || undefined, style: selectedStyle, date: dateStr, theme: "", mood });
+      toast("已保存到相册 ✨", { description: "你的日记便签已保存～" });
+    }
   };
 
   const handleShare = () => {
@@ -45,7 +52,13 @@ const CompletionPage = () => {
           className="flex-1 py-3.5 rounded-2xl bg-primary text-primary-foreground font-body text-sm tracking-wide flex items-center justify-center gap-2 note-shadow hover:note-shadow-hover hover:scale-[1.01] gentle-transition"
         >
           <Download className="w-4 h-4" />
-          保存到相册
+          保存
+        </button>
+        <button
+          onClick={() => setShowExport(true)}
+          className="py-3.5 px-5 rounded-2xl bg-card text-foreground font-body text-sm border-2 border-border flex items-center justify-center gap-2 hover:bg-muted hover:scale-105 gentle-transition"
+        >
+          📤 导出
         </button>
         <button
           onClick={handleShare}
@@ -85,6 +98,15 @@ const CompletionPage = () => {
           </div>
         </div>
       )}
+
+      <ExportDialog
+        open={showExport}
+        onClose={() => setShowExport(false)}
+        text={text}
+        image={image}
+        style={selectedStyle}
+        layoutVariant={layoutVariant}
+      />
     </div>
   );
 };

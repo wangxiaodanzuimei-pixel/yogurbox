@@ -15,6 +15,7 @@ const InputPage = () => {
   const [wordCount, setWordCount] = useState(0);
   const [isRemoving, setIsRemoving] = useState(false);
   const [showImageMenu, setShowImageMenu] = useState(false);
+  const [autoRemoveBg, setAutoRemoveBg] = useState(false);
 
   const handleTextChange = (val: string) => {
     const words = val.trim().split(/\s+/).filter(Boolean).length;
@@ -31,6 +32,40 @@ const InputPage = () => {
       reader.onload = (ev) => setImage(ev.target?.result as string);
       reader.readAsDataURL(file);
       setShowImageMenu(false);
+    }
+  };
+
+  const handleCameraCapture = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = async (ev) => {
+        const dataUrl = ev.target?.result as string;
+        setImage(dataUrl);
+        setShowImageMenu(false);
+        if (autoRemoveBg) {
+          // Auto remove background after capture
+          setIsRemoving(true);
+          try {
+            const { data, error } = await supabase.functions.invoke('remove-bg', {
+              body: { image: dataUrl },
+            });
+            if (error) throw error;
+            if (data?.image) {
+              setImage(data.image);
+              toast.success("背景已移除 ✨", { duration: 3000 });
+            }
+          } catch (err: any) {
+            console.error('Auto remove bg error:', err);
+            toast.error("自动抠图失败，可手动点击抠图按钮");
+          } finally {
+            setIsRemoving(false);
+          }
+        } else {
+          toast("照片已保存 📷", { duration: 2000 });
+        }
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -163,18 +198,35 @@ const InputPage = () => {
                     </div>
                   </label>
                   <div className="border-t border-border mx-4" />
-                  <label
-                    htmlFor="camera-upload"
-                    className="w-full px-4 py-3.5 flex items-center gap-3 hover:bg-muted gentle-transition text-left cursor-pointer"
-                  >
-                    <div className="w-8 h-8 rounded-full bg-kawaii-green/15 flex items-center justify-center">
-                      <Camera className="w-4 h-4 text-kawaii-green" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-body text-foreground">拍照抠图</p>
-                      <p className="text-[10px] font-body text-muted-foreground">拍照并自动去除背景</p>
-                    </div>
-                  </label>
+                  <div className="w-full px-4 py-3.5 flex items-center gap-3">
+                    <label
+                      htmlFor="camera-upload"
+                      className="flex items-center gap-3 flex-1 cursor-pointer hover:opacity-80 gentle-transition"
+                    >
+                      <div className="w-8 h-8 rounded-full bg-kawaii-green/15 flex items-center justify-center">
+                        <Camera className="w-4 h-4 text-kawaii-green" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-body text-foreground">拍照</p>
+                        <p className="text-[10px] font-body text-muted-foreground">使用相机拍摄</p>
+                      </div>
+                    </label>
+                    {/* Auto remove bg toggle */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setAutoRemoveBg(!autoRemoveBg);
+                      }}
+                      className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[10px] font-body gentle-transition border ${
+                        autoRemoveBg
+                          ? "bg-primary/10 border-primary/30 text-primary"
+                          : "bg-muted/50 border-border text-muted-foreground"
+                      }`}
+                    >
+                      <Scissors className="w-3 h-3" />
+                      自动抠图
+                    </button>
+                  </div>
                 </div>
               </>
             )}
@@ -186,18 +238,7 @@ const InputPage = () => {
           type="file"
           accept="image/*"
           capture="environment"
-          onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (file) {
-              const reader = new FileReader();
-              reader.onload = async (ev) => {
-                const dataUrl = ev.target?.result as string;
-                setImage(dataUrl);
-                toast("照片已保存 📷");
-              };
-              reader.readAsDataURL(file);
-            }
-          }}
+          onChange={handleCameraCapture}
           className="hidden"
         />
       </div>
@@ -218,7 +259,6 @@ const InputPage = () => {
           </button>
         </div>
       </div>
-      {/* Bottom spacer for fixed button */}
       <div className="h-20" />
     </div>
   );
