@@ -1,1 +1,4 @@
 project_id = "hifdwuywktxgmytljugd"
+
+[functions.remove-bg]
+verify_jwt = false
