@@ -4,9 +4,10 @@ import { calendarIcons, type DiaryEntry } from "@/lib/diary-data";
 
 interface CalendarViewProps {
   entries: DiaryEntry[];
+  onDateClick?: (entry: DiaryEntry) => void;
 }
 
-const CalendarView = ({ entries }: CalendarViewProps) => {
+const CalendarView = ({ entries, onDateClick }: CalendarViewProps) => {
   const [currentDate, setCurrentDate] = useState(new Date());
 
   const year = currentDate.getFullYear();
@@ -21,9 +22,9 @@ const CalendarView = ({ entries }: CalendarViewProps) => {
   const prevMonth = () => setCurrentDate(new Date(year, month - 1, 1));
   const nextMonth = () => setCurrentDate(new Date(year, month + 1, 1));
 
-  const hasEntry = (day: number) => {
+  const getEntry = (day: number) => {
     const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-    return entries.some((e) => e.date === dateStr);
+    return entries.find((e) => e.date === dateStr);
   };
 
   const isToday = (day: number) =>
@@ -57,19 +58,21 @@ const CalendarView = ({ entries }: CalendarViewProps) => {
         ))}
         {Array.from({ length: daysInMonth }).map((_, i) => {
           const day = i + 1;
-          const filled = hasEntry(day);
+          const entry = getEntry(day);
           const todayClass = isToday(day);
 
           return (
-            <div
+            <button
               key={day}
+              onClick={() => entry && onDateClick?.(entry)}
+              disabled={!entry}
               className={`aspect-square flex flex-col items-center justify-center rounded-lg text-xs gentle-transition ${
                 todayClass ? "bg-primary/10 ring-1 ring-primary/30" : ""
-              } ${filled ? "bg-accent/20" : ""}`}
+              } ${entry ? "bg-accent/20 cursor-pointer hover:bg-accent/30" : "cursor-default"}`}
             >
               <span className="text-[10px] text-muted-foreground">{day}</span>
-              {filled && <span className="text-sm mt-0.5">{getIcon(day)}</span>}
-            </div>
+              {entry && <span className="text-sm mt-0.5">{getIcon(day)}</span>}
+            </button>
           );
         })}
       </div>
