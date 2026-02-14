@@ -237,67 +237,40 @@ const InputPage = () => {
             </div>
           </div>
         ) : (
-          <>
+          <div className="relative">
+            {/* Main camera button */}
             <button
-              onClick={() => setShowImageMenu(!showImageMenu)}
+              onClick={() => cameraRef.current?.click()}
               className="w-full py-7 rounded-2xl border-2 border-dashed border-border hover:border-primary/30 hover:bg-card gentle-transition flex flex-col items-center gap-2"
             >
-              <div className="w-10 h-10 rounded-full bg-kawaii-pink/15 flex items-center justify-center">
-                <ImagePlus className="w-5 h-5 text-primary" />
+              <div className="w-10 h-10 rounded-full bg-kawaii-green/15 flex items-center justify-center">
+                <Camera className="w-5 h-5 text-kawaii-green" />
               </div>
-              <span className="text-xs font-body text-muted-foreground">添加图片</span>
+              <span className="text-xs font-body text-muted-foreground">拍照</span>
             </button>
 
-            {showImageMenu && (
-              <>
-                <div className="fixed inset-0 z-20" onClick={() => setShowImageMenu(false)} />
-                <div className="absolute top-full left-0 right-0 mt-2 rounded-2xl bg-card border-2 border-border note-shadow z-30 overflow-hidden animate-slide-up">
-                  <label
-                    htmlFor="file-upload"
-                    className="w-full px-4 py-3.5 flex items-center gap-3 hover:bg-muted gentle-transition text-left cursor-pointer"
-                  >
-                    <div className="w-8 h-8 rounded-full bg-kawaii-blue/15 flex items-center justify-center">
-                      <ImagePlus className="w-4 h-4 text-kawaii-blue" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-body text-foreground">从相册选择</p>
-                      <p className="text-[10px] font-body text-muted-foreground">选择已有的照片</p>
-                    </div>
-                  </label>
-                  <div className="border-t border-border mx-4" />
-                  <div className="w-full px-4 py-3.5 flex items-center gap-3">
-                    <label
-                      htmlFor="camera-upload"
-                      className="flex items-center gap-3 flex-1 cursor-pointer hover:opacity-80 gentle-transition"
-                    >
-                      <div className="w-8 h-8 rounded-full bg-kawaii-green/15 flex items-center justify-center">
-                        <Camera className="w-4 h-4 text-kawaii-green" />
-                      </div>
-                      <div>
-                        <p className="text-sm font-body text-foreground">拍照</p>
-                        <p className="text-[10px] font-body text-muted-foreground">使用相机拍摄</p>
-                      </div>
-                    </label>
-                    {/* Auto remove bg toggle */}
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setAutoRemoveBg(!autoRemoveBg);
-                      }}
-                      className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[10px] font-body gentle-transition border ${
-                        autoRemoveBg
-                          ? "bg-primary/10 border-primary/30 text-primary"
-                          : "bg-muted/50 border-border text-muted-foreground"
-                      }`}
-                    >
-                      <Scissors className="w-3 h-3" />
-                      自动抠图
-                    </button>
-                  </div>
-                </div>
-              </>
-            )}
-          </>
+            {/* Bottom-left: album */}
+            <button
+              onClick={() => fileRef.current?.click()}
+              className="absolute bottom-2 left-3 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-card/80 border border-border text-[10px] font-body text-muted-foreground hover:text-foreground gentle-transition note-shadow"
+            >
+              <ImagePlus className="w-3.5 h-3.5" />
+              相册
+            </button>
+
+            {/* Top-right: auto remove bg toggle */}
+            <button
+              onClick={() => setAutoRemoveBg(!autoRemoveBg)}
+              className={`absolute top-2 right-3 flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-[10px] font-body gentle-transition border note-shadow ${
+                autoRemoveBg
+                  ? "bg-primary/10 border-primary/30 text-primary"
+                  : "bg-card/80 border-border text-muted-foreground"
+              }`}
+            >
+              <Scissors className="w-3 h-3" />
+              自动抠图
+            </button>
+          </div>
         )}
         <input id="file-upload" ref={fileRef} type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
         <input id="camera-upload"
