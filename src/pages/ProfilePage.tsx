@@ -1,11 +1,36 @@
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Clock, Pencil } from "lucide-react";
+import { ArrowLeft, Clock, Pencil, X } from "lucide-react";
 import { useDiaryStore } from "@/lib/diary-store";
+import CalendarView from "@/components/CalendarView";
+import NotePreview from "@/components/NotePreview";
+import ExportDialog from "@/components/ExportDialog";
 import type { DiaryEntry } from "@/lib/diary-data";
+import { useState } from "react";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
   const { entries, loadEntry } = useDiaryStore();
+  const [selectedEntry, setSelectedEntry] = useState<DiaryEntry | null>(null);
+  const [showExport, setShowExport] = useState(false);
+  const [exportEntry, setExportEntry] = useState<DiaryEntry | null>(null);
+
+  const todayStr = (() => {
+    const t = new Date();
+    return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, "0")}-${String(t.getDate()).padStart(2, "0")}`;
+  })();
+
+  const todayEntries = entries.filter((e) => e.date === todayStr);
+  const latestEntry = todayEntries[todayEntries.length - 1];
+
+  const handleEdit = (entry: DiaryEntry) => {
+    loadEntry(entry);
+    navigate("/");
+  };
+
+  const handleExport = (entry: DiaryEntry) => {
+    setExportEntry(entry);
+    setShowExport(true);
+  };
 
   const grouped = entries.reduce<Record<string, DiaryEntry[]>>((acc, entry) => {
     const date = new Date(entry.date);
@@ -17,14 +42,10 @@ const ProfilePage = () => {
 
   const sortedMonths = Object.keys(grouped).sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
 
-  const handleEdit = (entry: DiaryEntry) => {
-    loadEntry(entry);
-    navigate("/");
-  };
-
   return (
     <div className="min-h-screen bg-background px-6 py-8 max-w-lg mx-auto">
-      <div className="flex items-center gap-3 mb-8 animate-fade-in">
+      {/* Header */}
+      <div className="flex items-center gap-3 mb-6 animate-fade-in">
         <button onClick={() => navigate("/")} className="p-2 -ml-2 rounded-xl hover:bg-muted gentle-transition">
           <ArrowLeft className="w-5 h-5 text-foreground" />
         </button>
@@ -34,17 +55,53 @@ const ProfilePage = () => {
         </div>
       </div>
 
-      <div className="flex gap-3 mb-8 animate-slide-up" style={{ animationDelay: "0.1s", animationFillMode: "both" }}>
-        <button
-          onClick={() => navigate("/library")}
-          className="flex-1 py-4 px-4 rounded-2xl bg-card border-2 border-border note-shadow hover:bg-muted hover:scale-[1.02] gentle-transition text-center"
-        >
-          <span className="text-xl mb-1 block">🎨</span>
-          <p className="text-xs font-body text-foreground font-medium">素材库</p>
-          <p className="text-[10px] font-body text-muted-foreground mt-0.5">我的画师</p>
-        </button>
+      {/* Today's note preview */}
+      {latestEntry && (
+        <div className="mb-6 animate-slide-up" style={{ animationDelay: "0.05s", animationFillMode: "both" }}>
+          <p className="text-[10px] font-body tracking-widest text-muted-foreground mb-2 px-1">📝 今日便签</p>
+          <NotePreview text={latestEntry.text} image={latestEntry.image} style={latestEntry.style} layoutVariant={0} />
+          <div className="flex gap-2 mt-3 justify-center">
+            <button
+              onClick={() => handleEdit(latestEntry)}
+              className="text-[10px] font-body px-3 py-1.5 rounded-full bg-muted text-muted-foreground hover:text-foreground gentle-transition flex items-center gap-1"
+            >
+              <Pencil className="w-3 h-3" /> 编辑
+            </button>
+            <button
+              onClick={() => handleExport(latestEntry)}
+              className="text-[10px] font-body px-3 py-1.5 rounded-full bg-primary/10 text-primary gentle-transition hover:bg-primary/20 flex items-center gap-1"
+            >
+              📤 导出
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Calendar month view */}
+      <div className="mb-6 animate-slide-up" style={{ animationDelay: "0.1s", animationFillMode: "both" }}>
+        <div className="rounded-2xl bg-card p-5 note-shadow border-2 border-border">
+          <h3 className="font-display text-base mb-4 text-center flex items-center justify-center gap-1.5">
+            📅 月视图
+          </h3>
+          <CalendarView entries={entries} onDateClick={(entry) => setSelectedEntry(entry)} />
+        </div>
       </div>
 
+      {/* Material library + timeline */}
+      <div className="animate-slide-up" style={{ animationDelay: "0.15s", animationFillMode: "both" }}>
+        <div className="flex gap-3 mb-6">
+          <button
+            onClick={() => navigate("/library")}
+            className="flex-1 py-4 px-4 rounded-2xl bg-card border-2 border-border note-shadow hover:bg-muted hover:scale-[1.02] gentle-transition text-center"
+          >
+            <span className="text-xl mb-1 block">🎨</span>
+            <p className="text-xs font-body text-foreground font-medium">素材库</p>
+            <p className="text-[10px] font-body text-muted-foreground mt-0.5">我的画师</p>
+          </button>
+        </div>
+      </div>
+
+      {/* Timeline */}
       <div className="animate-slide-up" style={{ animationDelay: "0.2s", animationFillMode: "both" }}>
         <div className="flex items-center gap-2 mb-5">
           <Clock className="w-4 h-4 text-muted-foreground" />
@@ -113,6 +170,41 @@ const ProfilePage = () => {
           </div>
         )}
       </div>
+
+      {/* Entry detail modal */}
+      {selectedEntry && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-6 bg-foreground/30 animate-fade-in" onClick={() => setSelectedEntry(null)}>
+          <div className="w-full max-w-sm rounded-2xl bg-card p-5 note-shadow border-2 border-border animate-slide-up" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-xs font-body text-muted-foreground">
+                {new Date(selectedEntry.date).toLocaleDateString("zh-CN", { year: "numeric", month: "long", day: "numeric", weekday: "short" })}
+              </p>
+              <button onClick={() => setSelectedEntry(null)} className="p-1 rounded-full hover:bg-muted">
+                <X className="w-4 h-4 text-muted-foreground" />
+              </button>
+            </div>
+            {selectedEntry.image && (
+              <div className="w-full h-32 rounded-xl overflow-hidden mb-3">
+                <img src={selectedEntry.image} alt="" className="w-full h-full object-cover" />
+              </div>
+            )}
+            <p className="text-sm font-body text-foreground leading-relaxed">{selectedEntry.text}</p>
+            {selectedEntry.mood && <span className="text-lg mt-2 inline-block">{selectedEntry.mood}</span>}
+          </div>
+        </div>
+      )}
+
+      {/* Export dialog */}
+      {exportEntry && (
+        <ExportDialog
+          open={showExport}
+          onClose={() => { setShowExport(false); setExportEntry(null); }}
+          text={exportEntry.text}
+          image={exportEntry.image}
+          style={exportEntry.style}
+          layoutVariant={0}
+        />
+      )}
     </div>
   );
 };
