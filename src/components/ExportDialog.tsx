@@ -70,16 +70,16 @@ const ExportDialog = ({ open, onClose, text, image, style, layoutVariant }: Expo
         {/* Preview with watermark */}
         <div
           ref={containerRef}
-          className={`bg-card rounded-2xl overflow-hidden ${ratio === "4:3" ? "aspect-[4/3]" : "aspect-square"} flex flex-col`}
+          className={`bg-card rounded-2xl overflow-hidden ${ratio === "4:3" ? "aspect-[4/3]" : "aspect-square"} flex flex-col relative`}
         >
           <div className="flex-1 flex items-center justify-center p-3">
             <div className={ratio === "4:3" ? "w-full max-w-[70%]" : "w-full"}>
               <NotePreview text={text} image={image} style={style} layoutVariant={layoutVariant} />
             </div>
           </div>
-          {/* Watermark */}
-          <div className="py-2 text-center">
-            <p className="text-[9px] font-body text-muted-foreground/50 tracking-[0.2em]">
+          {/* Watermark - bottom right */}
+          <div className="absolute bottom-2 right-3">
+            <p className="text-[8px] font-body text-muted-foreground/40 tracking-[0.15em]">
               designed by 花语
             </p>
           </div>

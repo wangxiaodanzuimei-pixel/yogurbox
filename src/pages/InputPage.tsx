@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ImagePlus, ArrowRight, X, Camera, Scissors, Loader2, User, RefreshCw, Check } from "lucide-react";
+import { ImagePlus, ArrowRight, X, Camera, Scissors, Loader2, User, RefreshCw, Check, Download } from "lucide-react";
 import MoodPicker from "@/components/MoodPicker";
 import { useDiaryStore } from "@/lib/diary-store";
 import { supabase } from "@/integrations/supabase/client";
@@ -286,7 +286,21 @@ const InputPage = () => {
       <div className="fixed bottom-0 left-0 right-0 px-6 pb-6 pt-3 bg-gradient-to-t from-background via-background to-transparent z-30">
         <div className="max-w-lg mx-auto">
           <button
-            onClick={() => canProceed && navigate("/style")}
+            onClick={() => {
+              if (!canProceed) return;
+              const today = new Date();
+              const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+              const { editingEntryId, selectedStyle, saveEntry, updateEntry, reset: resetStore } = useDiaryStore.getState();
+              if (editingEntryId) {
+                updateEntry({ id: editingEntryId, text, image: image || undefined, style: selectedStyle, date: dateStr, theme: "", mood });
+                toast("已更新 ✨", { duration: 2000 });
+              } else {
+                saveEntry({ id: Date.now().toString(), text, image: image || undefined, style: selectedStyle, date: dateStr, theme: "", mood });
+                toast("已存下 ✨", { duration: 2000 });
+              }
+              resetStore();
+              navigate("/profile");
+            }}
             disabled={!canProceed}
             className={`w-full py-4 rounded-2xl font-body text-sm tracking-wide flex items-center justify-center gap-2 gentle-transition ${
               canProceed
@@ -294,8 +308,8 @@ const InputPage = () => {
                 : "bg-muted text-muted-foreground cursor-not-allowed"
             }`}
           >
-            选择风格
-            <ArrowRight className="w-4 h-4" />
+            <Download className="w-4 h-4" />
+            存下它
           </button>
         </div>
       </div>
