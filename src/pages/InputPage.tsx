@@ -1,11 +1,11 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ImagePlus, ArrowRight, X, Camera, Scissors, Loader2, User } from "lucide-react";
-import DailyTheme from "@/components/DailyTheme";
+import { ImagePlus, ArrowRight, X, Camera, Scissors, Loader2, User, RefreshCw, Check } from "lucide-react";
 import MoodPicker from "@/components/MoodPicker";
 import { useDiaryStore } from "@/lib/diary-store";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { dailyThemes } from "@/lib/diary-data";
 
 const InputPage = () => {
   const navigate = useNavigate();
@@ -16,6 +16,44 @@ const InputPage = () => {
   const [isRemoving, setIsRemoving] = useState(false);
   const [showImageMenu, setShowImageMenu] = useState(false);
   const [autoRemoveBg, setAutoRemoveBg] = useState(false);
+  const [suggestedTheme, setSuggestedTheme] = useState("");
+  const [themeAdopted, setThemeAdopted] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  useEffect(() => {
+    pickNewTheme();
+  }, []);
+
+  const pickNewTheme = () => {
+    const t = dailyThemes[Math.floor(Math.random() * dailyThemes.length)];
+    setSuggestedTheme(t);
+    setThemeAdopted(false);
+    setTheme("");
+  };
+
+  const handleRefreshTheme = () => {
+    setIsRefreshing(true);
+    setTimeout(() => {
+      pickNewTheme();
+      setIsRefreshing(false);
+    }, 300);
+  };
+
+  const handleAdoptTheme = async () => {
+    setThemeAdopted(true);
+    setTheme(suggestedTheme);
+    toast("已采纳主题 ✨", { duration: 2000 });
+    try {
+      await supabase.from("theme_usage").insert({ theme: suggestedTheme, is_recommended: true });
+    } catch (e) {
+      console.error("Failed to record theme adoption", e);
+    }
+  };
+
+  const handleDismissTheme = () => {
+    setThemeAdopted(false);
+    setTheme("");
+  };
 
   const handleTextChange = (val: string) => {
     const words = val.trim().split(/\s+/).filter(Boolean).length;
@@ -112,23 +150,52 @@ const InputPage = () => {
         </button>
       </div>
 
-      {/* Daily theme */}
-      <div className="mb-4 animate-slide-up" style={{ animationDelay: "0.1s", animationFillMode: "both" }}>
-        <DailyTheme onThemeChange={setTheme} />
-      </div>
-
       {/* Mood picker */}
-      <div className="mb-6 animate-slide-up" style={{ animationDelay: "0.15s", animationFillMode: "both" }}>
+      <div className="mb-4 animate-slide-up" style={{ animationDelay: "0.1s", animationFillMode: "both" }}>
         <MoodPicker selected={mood} onSelect={setMood} />
       </div>
 
-      {/* Text input */}
-      <div className="mb-6 animate-slide-up" style={{ animationDelay: "0.2s", animationFillMode: "both" }}>
+      {/* Suggested theme + Text input */}
+      <div className="mb-6 animate-slide-up" style={{ animationDelay: "0.15s", animationFillMode: "both" }}>
+        {/* Theme suggestion bar */}
+        <div className="flex items-center gap-2 mb-2 px-1">
+          <p className={`text-xs font-body flex-1 gentle-transition ${themeAdopted ? "text-primary" : "text-muted-foreground/50"}`}>
+            💭 {themeAdopted ? (
+              <span>已采纳：「{suggestedTheme}」</span>
+            ) : (
+              <span>推荐：{suggestedTheme}</span>
+            )}
+          </p>
+          {themeAdopted ? (
+            <button
+              onClick={handleDismissTheme}
+              className="text-[10px] font-body px-2.5 py-1 rounded-full bg-primary/10 text-primary gentle-transition hover:bg-primary/20"
+            >
+              取消采纳
+            </button>
+          ) : (
+            <button
+              onClick={handleAdoptTheme}
+              className="text-[10px] font-body px-2.5 py-1 rounded-full bg-primary/10 text-primary gentle-transition hover:bg-primary/20 flex items-center gap-1"
+            >
+              <Check className="w-3 h-3" />
+              就写这个
+            </button>
+          )}
+          <button
+            onClick={handleRefreshTheme}
+            className="p-1.5 rounded-full hover:bg-muted gentle-transition"
+            aria-label="换一个"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 text-muted-foreground/50 ${isRefreshing ? "animate-spin" : ""}`} />
+          </button>
+        </div>
+
         <textarea
           value={text}
           onChange={(e) => handleTextChange(e.target.value)}
-          placeholder="开始书写…"
-          className="w-full h-44 bg-card rounded-2xl border-2 border-border p-5 text-sm font-body text-foreground placeholder:text-muted-foreground/40 resize-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/30 gentle-transition note-shadow"
+          placeholder={themeAdopted ? `关于「${suggestedTheme}」…` : "开始书写…"}
+          className="w-full h-44 bg-card rounded-2xl border-2 border-border p-5 text-sm font-body text-foreground placeholder:text-muted-foreground/30 resize-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/30 gentle-transition note-shadow"
         />
         <div className="flex justify-end mt-2">
           <span className={`text-xs font-body ${wordCount > 180 ? "text-destructive" : "text-muted-foreground"}`}>
