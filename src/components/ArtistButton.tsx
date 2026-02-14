@@ -17,10 +17,10 @@ const ArtistButton = ({ name, subtitle, bio, isActive, onClick }: ArtistButtonPr
     <div className="relative">
       <button
         onClick={onClick}
-        className={`w-full px-4 py-3 rounded-lg text-left gentle-transition font-body ${
+        className={`w-full px-4 py-3 rounded-xl text-left gentle-transition font-body ${
           isActive
-            ? "bg-primary text-primary-foreground note-shadow"
-            : "bg-card text-foreground hover:bg-muted border border-border"
+            ? "bg-primary text-primary-foreground note-shadow scale-[1.01]"
+            : "bg-card text-foreground hover:bg-muted border-2 border-border hover:scale-[1.01]"
         }`}
       >
         <div className="flex items-center justify-between">
@@ -35,7 +35,7 @@ const ArtistButton = ({ name, subtitle, bio, isActive, onClick }: ArtistButtonPr
               e.stopPropagation();
               setShowBio(!showBio);
             }}
-            className={`p-1 rounded-full ${isActive ? "hover:bg-primary-foreground/10" : "hover:bg-muted"}`}
+            className={`p-1.5 rounded-full ${isActive ? "hover:bg-primary-foreground/10" : "hover:bg-muted"}`}
             aria-label={`关于 ${name}`}
           >
             <Info className="w-3.5 h-3.5" />
@@ -44,11 +44,11 @@ const ArtistButton = ({ name, subtitle, bio, isActive, onClick }: ArtistButtonPr
       </button>
 
       {showBio && (
-        <div className="absolute bottom-full left-0 right-0 mb-2 p-4 rounded-lg bg-card note-shadow border border-border z-20 animate-slide-up">
+        <div className="absolute bottom-full left-0 right-0 mb-2 p-4 rounded-2xl bg-card note-shadow border-2 border-border z-20 animate-slide-up">
           <p className="text-xs font-body text-foreground leading-relaxed">{bio}</p>
           <button
             onClick={() => setShowBio(false)}
-            className="mt-2 text-[10px] text-muted-foreground uppercase tracking-widest hover:text-foreground"
+            className="mt-2 text-[10px] text-muted-foreground tracking-widest hover:text-foreground"
           >
             关闭
           </button>
